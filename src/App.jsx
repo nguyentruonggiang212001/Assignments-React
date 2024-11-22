@@ -10,9 +10,7 @@ import ProductList from "./ProductList";
 function App() {
   return (
     <>
-      <div className="App" style={{ padding: "20px" }}>
       <ProductList />
-    </div>
     </>
   )
 }
