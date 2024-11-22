@@ -1,43 +1,47 @@
 import React from "react";
+import './App.css'
+import { datas } from "./data"; 
 
-const ProductList = ({ products }) => {
+function Product(props) {
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
-      {products.map((product) => (
-        <div
-          key={product.sku}
-          style={{
-            border: "1px solid #ccc",
-            padding: "10px",
-            width: "250px",
-            boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-          }}
-        >
-          <img
-            src={product.image}
-            alt={product.name}
-            style={{ width: "100%", height: "200px", objectFit: "cover" }}
-          />
-          <h2 style={{ fontSize: "18px" }}>{product.name}</h2>
-          <p>{product.short_description}</p>
-          <p>
-            <strong>Price:</strong> {product.final_price.toLocaleString()} VND
-          </p>
-          <p>
-            <strong>SKU:</strong> {product.sku}
-          </p>
-          <p>
-            <strong>Stock:</strong> {product.stock}
-          </p>
-          <p>
-            <strong>Materials:</strong> {product.materials}
-          </p>
-          <p>
-            <strong>Instructions:</strong> {product.instruction}
-          </p>
-        </div>
+    <div className="product">
+      <img
+        src={props.product.image}
+        alt={props.product.name}
+        className="product-image"
+      />
+      <h2 className="product-name">{props.product.name}</h2>
+      <p className="product-description">{props.product.short_description}</p>
+      <div className="product-detail">
+        <span>Price:</span> {props.product.final_price} VNĐ
+      </div>
+      <div className="product-detail">
+        <span>SKU:</span> {props.product.sku}
+      </div>
+      <div className="product-detail">
+        <span>Stock:</span> {props.product.stock}
+      </div>
+      <div className="product-detail">
+        <span>Materials:</span> {props.product.materials}
+      </div>
+      <div className="product-detail">
+        <span>Instructions:</span> {props.product.instruction}
+      </div>
+    </div>
+  );
+}
+
+
+const ProductList = () => {
+  return (
+    <>
+    <h1>Danh sách sản phẩm</h1>
+    <div className="productlist">
+      {datas.map((item) => (
+        <Product key={item.sku} product={item} />
       ))}
     </div>
+    </>
   );
 };
 

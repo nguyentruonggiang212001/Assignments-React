@@ -11,8 +11,7 @@ function App() {
   return (
     <>
       <div className="App" style={{ padding: "20px" }}>
-      <h1>Danh sách sản phẩm</h1>
-      <ProductList products={datas} />
+      <ProductList />
     </div>
     </>
   )
