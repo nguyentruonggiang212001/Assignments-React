@@ -1,6 +1,7 @@
 import React from "react";
 import '../index.css'
-import { datas } from "../data"; 
+import { datas } from "../data";
+
 
 function Product(props) {
   function formVND(price){
@@ -35,17 +36,17 @@ function Product(props) {
 }
 
 
-const ProductList = () => {
+function ProductList({ visibleProducts }) {
   return (
     <>
-    <h1 style={{ marginTop: "100px" }}>Danh sách sản phẩm</h1>
-    <div className="productlist">
-      {datas.map((item) => (
-        <Product key={item.sku} product={item} />
-      ))}
-    </div>
+      <h1>Danh sách sản phẩm</h1>
+      <div className="productlist">
+        {datas.slice(0, visibleProducts).map((item) => (
+          <Product key={item.sku} product={item} />
+        ))}
+      </div>
     </>
   );
-};
+}
 
 export default ProductList;

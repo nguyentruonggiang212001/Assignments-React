@@ -68,13 +68,16 @@ button:focus-visible {
 }
 /*Header*/
 header{
-  position: fixed;
+  /* position: fixed; */
+  position: relative;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
   background: rgb(248, 241, 228);
-  max-width: 1200px;
+  max-width: 1280px;
   top: 0;
+  top: -32px;
   height: 100px;
  
 
@@ -92,6 +95,25 @@ ul{
 li a{
   font-size: 16px;
   color: black;
+}
+
+.light {
+  background-color: #fff;
+  color: #000;
+}
+.light nav a {
+  color: black;
+}
+.dark {
+  background-color: #121212;
+  color: #fff;
+}
+.dark nav a {
+  color: white;
+}
+
+.dark header{
+  background-color: #000;
 }
 
 /*ProductList*/
@@ -120,17 +142,12 @@ li a{
   font-size: 18px;
 }
 
-.product-description {
-  color: #555;
-}
 .product-description strong{
-  color: black;
   font-weight: bold;
 }
 
 .product-detail span {
   font-weight: bold;
-  color: black;
 }
 /*Footer*/
 .footer-last{
@@ -141,3 +158,4 @@ li a{
   align-items: center;
   padding: 15px 0px;
 }
+
