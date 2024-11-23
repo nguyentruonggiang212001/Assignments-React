@@ -1,8 +1,11 @@
 import React from "react";
-import './App.css'
-import { datas } from "./data"; 
+import '../index.css'
+import { datas } from "../data"; 
 
 function Product(props) {
+  function formVND(price){
+  return price.toLocaleString('it-IT', {style : 'currency', currency : 'VND'});
+  }
   return (
     <div className="product">
       <img
@@ -10,10 +13,10 @@ function Product(props) {
         alt={props.product.name}
         className="product-image"
       />
-      <h2 className="product-name">{props.product.name}</h2>
-      <p className="product-description">{props.product.short_description}</p>
+      <h2 className="product-name">Name:{props.product.name}</h2>
+      <p className="product-description"><strong>Description:</strong>{props.product.short_description}</p>
       <div className="product-detail">
-        <span>Price:</span> {props.product.final_price} VNĐ
+        <span>Price:</span> {formVND(props.product.final_price)} 
       </div>
       <div className="product-detail">
         <span>SKU:</span> {props.product.sku}
@@ -35,7 +38,7 @@ function Product(props) {
 const ProductList = () => {
   return (
     <>
-    <h1>Danh sách sản phẩm</h1>
+    <h1 style={{ marginTop: "100px" }}>Danh sách sản phẩm</h1>
     <div className="productlist">
       {datas.map((item) => (
         <Product key={item.sku} product={item} />

@@ -19,7 +19,7 @@ export const datas = [
   {
     final_price: 99000,
     image: "https://canifa.com/img/500/750/resize/8/u/8us22a009-sk238-xl-1.jpg",
-    meta_title: "Combo 2 quần sịp tam giác nam dáng ôm sát 8US22A009",
+    meta_title: "Conpmbo 2 quần sịp tam giác nam dáng ôm sát 8US22A009",
     meta_description: "Đồ lót. Pack 2 quần sịp tam giác nam",
     name: "Combo 2 quần sịp tam giác nam dáng ôm sát",
     short_description:
