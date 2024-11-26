@@ -23,7 +23,10 @@ const Shop = () => {
             });
     }, [limit, skip]);
 
-     useEffect(() => {
+  
+
+    if (searchValue !== "") {
+           useEffect(() => {
         if (searchValue.trim() === "") {
             fetch(`https://dummyjson.com/products`)
                 .then((res) => res.json())
@@ -48,13 +51,15 @@ const Shop = () => {
                 });
         }
     }, [searchValue]);
+	}
+
 
 
     const handleSelectLimit = (e) => {
         const selectedLimit = e.target.value;
         console.log(selectedLimit);
         if (selectedLimit === "all") {
-            setLimit(products.total);
+            setLimit(0);
             console.log("get All");
         } else {
             setLimit(selectedLimit);
@@ -95,8 +100,6 @@ const Shop = () => {
         ));
     }
    };
-
-
     return (
         <div >
             <select style={{marginBottom:"50px"}} onChange={(e) => handleSelectLimit(e)}>
