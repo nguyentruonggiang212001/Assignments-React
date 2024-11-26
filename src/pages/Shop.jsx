@@ -23,9 +23,6 @@ const Shop = () => {
             });
     }, [limit, skip]);
 
-  
-
-    if (searchValue !== "") {
            useEffect(() => {
         if (searchValue.trim() === "") {
             fetch(`https://dummyjson.com/products`)
@@ -51,10 +48,7 @@ const Shop = () => {
                 });
         }
     }, [searchValue]);
-	}
-
-
-
+	
     const handleSelectLimit = (e) => {
         const selectedLimit = e.target.value;
         console.log(selectedLimit);
