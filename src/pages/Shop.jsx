@@ -5,6 +5,7 @@ const Shop = () => {
     const [limit, setLimit] = useState(10);
     const [skip, setSkip] = useState(0);
     const [page, setPage] = useState(1);
+    const [totalProducts, setTotalProducts] = useState(0); 
     const initUrl = `https://dummyjson.com/products`;
     const [url, setUrl] = useState(initUrl);
     const [searchValue, setSearchValue] = useState("");
@@ -18,32 +19,35 @@ const Shop = () => {
                 console.log(limit,skip);
                 console.log(products);
                 setProducts(products);
+                setTotalProducts(total);
             });
     }, [limit, skip]);
 
-    useEffect(() => {
-    if (searchValue.trim() === "") {
-        fetch(`https://dummyjson.com/products?limit=${limit}&skip=${skip}`)
-            .then((res) => res.json())
-            .then(({ products }) => setProducts(products))
-            .catch((error) => {
-                console.error("Lỗi khi lấy danh sách sản phẩm gốc:", error);
-            });
-        return;
-    }
-
-    fetch(`https://dummyjson.com/products?limit=194`)
-        .then((res) => res.json())
-        .then(({ products }) => {
-            const filtered = products.filter((item) =>
-                item.title.toLowerCase().includes(searchValue.toLowerCase())
-            );
-            setProducts(filtered);
-        })
-        .catch((error) => {
-            console.error("Lỗi khi tìm kiếm sản phẩm:", error);
-        });
- }, [searchValue, limit, skip]);
+     useEffect(() => {
+        if (searchValue.trim() === "") {
+            fetch(`https://dummyjson.com/products?limit=${limit}&skip=${skip}`)
+                .then((res) => res.json())
+                .then(({ products, total }) => {
+                    setProducts(products);
+                    setTotalProducts(total);
+                })
+                .catch((error) => {
+                    console.error("Error fetching products:", error);
+                });
+        } else {
+            fetch(`https://dummyjson.com/products?limit=194`)
+                .then((res) => res.json())
+                .then(({ products }) => {
+                    const filtered = products.filter((item) =>
+                        item.title.toLowerCase().includes(searchValue.toLowerCase())
+                    );
+                    setProducts(filtered);
+                })
+                .catch((error) => {
+                    console.error("Error searching products:", error);
+                });
+        }
+    }, [searchValue, limit, skip]);
 
 
     const handleSelectLimit = (e) => {
@@ -72,9 +76,13 @@ const Shop = () => {
     setSkip((prev) => prev + 10);
     };
 
-        const handleSearch = (e) => {
+    const handleSearch = (e) => {
         setSearchValue(e.target.value);
     };
+
+    function isNextDisabled() {
+    return products.length === 0 || skip + limit >= totalProducts;
+    }
 
     return (
         <div >
@@ -106,9 +114,7 @@ const Shop = () => {
           <button  style={{marginTop:"50px"}} className="btn btn-primary" onClick={handlePrev}>
                 Prev
             </button>
-            <button style={{marginTop:"50px"}} className="btn btn-primary" onClick={handleNext}>
-                Next
-            </button>
+            <button style={{marginTop:"50px"}} className="btn btn-primary" onClick={handleNext} disabled={isNextDisabled()}>Next</button>
          </div>
     );
 };
