@@ -19,23 +19,23 @@ const Shop = () => {
                 console.log(limit,skip);
                 console.log(products);
                 setProducts(products);
-                setTotalProducts(total);
+                
             });
     }, [limit, skip]);
 
      useEffect(() => {
         if (searchValue.trim() === "") {
-            fetch(`https://dummyjson.com/products?limit=${limit}&skip=${skip}`)
+            fetch(`https://dummyjson.com/products`)
                 .then((res) => res.json())
                 .then(({ products, total }) => {
                     setProducts(products);
                     setTotalProducts(total);
                 })
                 .catch((error) => {
-                    console.error("Error fetching products:", error);
+                    console.error("Không lấy được sản phẩm:", error);
                 });
         } else {
-            fetch(`https://dummyjson.com/products?limit=194`)
+            fetch(`https://dummyjson.com/products`)
                 .then((res) => res.json())
                 .then(({ products }) => {
                     const filtered = products.filter((item) =>
@@ -44,31 +44,25 @@ const Shop = () => {
                     setProducts(filtered);
                 })
                 .catch((error) => {
-                    console.error("Error searching products:", error);
+                    console.error("Không có sản phẩm ", error);
                 });
         }
-    }, [searchValue, limit, skip]);
+    }, [searchValue]);
 
 
     const handleSelectLimit = (e) => {
         const selectedLimit = e.target.value;
         console.log(selectedLimit);
         if (selectedLimit === "all") {
-            setLimit(0)
+            setLimit(products.total);
             console.log("get All");
         } else {
             setLimit(selectedLimit);
         }
     };
     const handlePrev = () => {
-    setPage((prev) => {
-        if (prev > 1) return prev - 1;
-        return prev;
-    });
-    setSkip((prev) => {
-        if (prev > 0) return prev - 10;
-        return prev;
-    });
+    setPage((prev) => prev - 1);
+    setSkip((prev) => prev - 10);
     };
 
     const handleNext = () => {
@@ -80,9 +74,28 @@ const Shop = () => {
         setSearchValue(e.target.value);
     };
 
-    function isNextDisabled() {
-    return products.length === 0 || skip + limit >= totalProducts;
+    function nextDisabled() {
+    if (products.length === 0) {
+        return true; 
     }
+    return skip + 10 >= totalProducts; 
+}
+    const renderProducts = () => {
+    if (products.length === 0) {
+        return <p style={{ color: "red", fontSize: "20px" }}>Không có sản phẩm trong danh mục</p>;
+    } else {
+        return products.map((item) => (
+            <div className="product" key={item.id}>
+                <img src={item.thumbnail} alt={item.title} />
+                <span>{item.id}</span>
+                <h3>{item.title}</h3>
+                <p>Giá: {item.price}</p>
+                <a href="#" className="btn btn-danger">Xem chi tiết</a>
+            </div>
+        ));
+    }
+   };
+
 
     return (
         <div >
@@ -94,27 +107,15 @@ const Shop = () => {
             </select>        
                 <span style={{margin:"0px 5px"}}>Tìm kiếm sản phẩm:</span>
                 <input type="text" onChange={(e) => handleSearch(e)} />
+                
         <div className="productlist ">
-            {products.length > 0 ? (
-        products.map((item) => (
-            <div className="product" key={item.id}>
-                <img src={item.thumbnail} alt={item.title} />
-                <span>{item.id}</span>
-                <h3>{item.title}</h3>
-                <p>Giá: {item.price}</p>
-                <a href="#" className="btn btn-danger">
-                    Xem chi tiết
-                </a>
-            </div>
-        ))
-         ) : (
-        <p style={{color:"red",fontSize:"20px"}}>Không có sản phẩm trong danh mục </p>
-         )}
+        {renderProducts()}
         </div>
+
           <button  style={{marginTop:"50px"}} className="btn btn-primary" onClick={handlePrev}>
                 Prev
             </button>
-            <button style={{marginTop:"50px"}} className="btn btn-primary" onClick={handleNext} disabled={isNextDisabled()}>Next</button>
+            <button style={{marginTop:"50px"}} className="btn btn-primary" onClick={handleNext} disabled={nextDisabled()}>Next</button>
          </div>
     );
 };
