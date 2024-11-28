@@ -22,6 +22,9 @@ function Header({ toggleDarkLight, theme }) {
           <li>
             <NavLink to="/contact">Contact</NavLink>
           </li>
+          <li>
+            <NavLink to="/admin/products">Admin</NavLink>
+          </li>
         </ul>
       </nav>
       <button onClick={toggleDarkLight}>
