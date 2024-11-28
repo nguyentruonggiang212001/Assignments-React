@@ -16,7 +16,7 @@ const ProductsList = () => {
   }, [stateData]);
 
   async function handleRemove(id) {
-    if (confirm('Bạn chắc chắn muốn xóa sản phẩm chứ?')) {
+    if (confirm('Bạn có chắc  muốn xóa sản phẩm chứ?')) {
       try {
         await fetch(`http://localhost:3000/products/${id}`, {
           method: "DELETE",
