@@ -1,3 +1,4 @@
+import { Link,NavLink } from 'react-router-dom';
 import logo from '../Components/icontokyo-Photoroom.png';
 import '../index.css';
 
@@ -5,21 +6,21 @@ function Header({ toggleDarkLight, theme }) {
   return (
     <header>
       <div className="logo">
-        <img src={logo} alt="Logo" />
+         <a href='/'><img src={logo} alt="Logo" /></a>
       </div>
       <nav>
         <ul>
           <li>
-            <a href="#">Home</a>
+            <NavLink to="/">Home</NavLink>
           </li>
           <li>
-            <a href="#">Shop</a>
+            <NavLink to="/shop">Shop</NavLink>
           </li>
           <li>
-            <a href="#">Services</a>
+            <NavLink to="/services">Services</NavLink>
           </li>
           <li>
-            <a href="#">Contact</a>
+            <NavLink to="/contact">Contact</NavLink>
           </li>
         </ul>
       </nav>
@@ -31,4 +32,3 @@ function Header({ toggleDarkLight, theme }) {
 }
 
 export default Header;
-
