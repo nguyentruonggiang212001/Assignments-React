@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../index.css";
 import { NavLink } from "react-router-dom";
 
+
 const ProductsList = () => {
   const [dataList, setDataList] = useState([]);
   const [stateData,setStateData] = useState(false)
@@ -29,6 +30,10 @@ const ProductsList = () => {
   };
   return (
     <div>
+      <h2 style={{marginTop:"100px"}}>Danh Sách Sản Phẩm</h2>
+      <div>
+       <NavLink to={"/admin/products/addproduct"}><button>AddProduct</button></NavLink>
+      </div>
       <table>
         <thead>
           <tr>

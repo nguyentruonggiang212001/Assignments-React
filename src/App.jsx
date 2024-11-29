@@ -11,13 +11,13 @@ import ProductDetailPage from './pages/ProductDetailPage';
 import ProductsLists from './admin/ProductsLists.jsx';
 import DashBoardPage from './admin/DashBoardPage.jsx';
 import Update from './admin/Update.jsx';
+import AddProduct from './admin/AddProduct.jsx';
 
 
 function App() {
 	return (
 		<>
 			<Header />
-       <h2 style={{marginTop:"100px"}}>Danh Sách Sản Phẩm</h2>
 			 <Routes>
 				<Route path="/" element ={<HomePage/>}/>
 				<Route path="/shop"  element ={<ShopPage/>}/>
@@ -27,6 +27,7 @@ function App() {
                 <Route path="/admin"  element ={<DashBoardPage/>}>
 				<Route path="/admin/products"  element ={<ProductsLists/>}/>
 				<Route path="/admin/products/update"  element ={<Update/>}/>
+				<Route path="/admin/products/addproduct"  element ={<AddProduct/>}/>
 			   </Route>
 				<Route path="*" element={<NotFoundPage/>}/>
 			 </Routes>

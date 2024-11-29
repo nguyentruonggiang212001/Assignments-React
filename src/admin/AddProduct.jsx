@@ -1,7 +1,6 @@
-import React from 'react';
+import React from 'react'
 import "../index.css";
-
-const Update = () => {
+const AddProduct = () => {
   return (
     <div className="form-update">
       <h1 className="header-update">Edit Product</h1>
@@ -18,10 +17,10 @@ const Update = () => {
         <textarea 
           rows="4" 
         ></textarea>
-        <button className='btn-update'>Edit Product</button>
+        <button className='btn-update'>Add Product</button>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default Update;
+export default AddProduct
