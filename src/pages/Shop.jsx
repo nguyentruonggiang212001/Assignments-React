@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import  { useEffect, useState } from "react";
+import {  NavLink } from "react-router-dom";
 
 
 const ShopPage = () => {
@@ -8,11 +8,8 @@ const ShopPage = () => {
     const [skip, setSkip] = useState(0);
     const [page, setPage] = useState(1);
     const [totalProducts, setTotalProducts] = useState(0); 
-    const initUrl = `https://dummyjson.com/products`;
-    const [url, setUrl] = useState(initUrl);
     const [searchValue, setSearchValue] = useState("");
-    if (searchValue !== "") {
-    }
+
 
     useEffect(() => {
         fetch(`https://dummyjson.com/products?limit=${limit}&skip=${skip}`)
@@ -87,11 +84,11 @@ const ShopPage = () => {
     } else {
         return products.map((item) => (
             <div className="product" key={item.id}>
-                <img src={item.thumbnail} alt={item.title} />
+                <NavLink to={`/products/${item.id}`}><img src={item.thumbnail} alt={item.title} /></NavLink>
                 <span>{item.id}</span>
                 <h3>{item.title}</h3>
                 <p>Giá: {item.price}</p>
-                <a href="#" className="btn btn-danger">Xem chi tiết</a>
+                <NavLink to={`/products/${item.id}`}><a className="btn btn-danger">Xem chi tiết</a></NavLink>
             </div>
         ));
     }
