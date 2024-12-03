@@ -3,7 +3,7 @@
     {
       "title": "12333333",
       "price": 1,
-      "description": "ahahahahah",
+      "description": "5555555555555",
       "id": 6
     },
     {
@@ -1369,6 +1369,20 @@
       "username": "giang11111111111111",
       "confirmPass": "123456",
       "id": 8
+    },
+    {
+      "email": "Hello123@gmail.com",
+      "password": "$2a$10$hgE3SQ38nfzg9EuZKnb6QuV8erhk//nv14.3OItDLuexrok3wXS3S",
+      "username": "giang11111111111111",
+      "confirmPass": "123456",
+      "id": 9
+    },
+    {
+      "email": "123@gmai.com",
+      "password": "$2a$10$kNjR0O4UCCGitZ4kZNuNyuELBv7lpmW.4xXm1KNGkLPvOdQGf2466",
+      "username": "giang11111111111111",
+      "confirmPass": "123456",
+      "id": 10
     }
   ]
 }

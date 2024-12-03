@@ -64,7 +64,7 @@ export const RegisterForm = () => {
 
         <label htmlFor="confirmPass">ConfirmPass</label>
         <input
-          type="text"
+          type="password"
           name="confirmPass"
           id="confirmPass"
           placeholder="ConfirmPass"
