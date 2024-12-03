@@ -1,283 +1,296 @@
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+    color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 
 }
+
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
+
 #root {
-  /* max-width: 1280px;
+    /* max-width: 1280px;
     margin: 0 auto;
     padding: 2rem; */
-  width: 100%;
-  text-align: center;
+    width: 100%;
+    text-align: center;
 }
 
 a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+    font-weight: 500;
+    color: #646cff;
+    text-decoration: inherit;
 }
 
 a:hover {
-  color: #535bf2;
+    color: #535bf2;
 }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+    margin: 0;
+    display: flex;
+    place-items: center;
+    min-width: 320px;
+    min-height: 100vh;
 }
 
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+    font-size: 3.2em;
+    line-height: 1.1;
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #1a1a1a;
+    cursor: pointer;
+    transition: border-color 0.25s;
 }
 
 button:hover {
-  border-color: #646cff;
+    border-color: #646cff;
 }
 
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+    outline: 4px auto -webkit-focus-ring-color;
 }
 
 @media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
+    :root {
+        color: #213547;
+        background-color: #ffffff;
+    }
 
-  a:hover {
-    color: #747bff;
-  }
+    a:hover {
+        color: #747bff;
+    }
 
-  button {
-    background-color: #f9f9f9;
-  }
+    button {
+        background-color: #f9f9f9;
+    }
 }
 
 /*Header*/
 header {
-  position: fixed;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  background: rgb(248, 241, 228);
-  top: 0;
-  height: 60px;
+    position: fixed;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background: rgb(248, 241, 228);
+    top: 0;
+    height: 60px;
 
 }
 
 .logo img {
-  width: 120px;
+    width: 120px;
 }
 
 ul {
-  display: flex;
+    display: flex;
 
-  justify-content: space-around;
-  gap: 193px;
-  list-style: none;
+    justify-content: space-around;
+    gap: 100px;
+    list-style: none;
 }
 
 li a {
-  font-size: 16px;
-  color: black;
+    font-size: 16px;
+    color: black;
 }
 
 .light {
-  background-color: #fff;
-  color: #000;
+    background-color: #fff;
+    color: #000;
 }
 
 .light nav a {
-  color: black;
+    color: black;
 }
 
 .dark {
-  background-color: #121212;
-  color: #fff;
+    background-color: #121212;
+    color: #fff;
 }
 
 .dark nav a {
-  color: white;
+    color: white;
 }
 
 .dark header {
-  background-color: #000;
+    background-color: #000;
 }
 
 /*ProductList*/
 .productlist {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
 
 }
 
 .product {
-  border: 1px solid #ccc;
-  padding: 10px;
-  width: 300px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 300px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .product-image {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
 }
 
 .product-name {
-  font-size: 18px;
+    font-size: 18px;
 }
 
 .product-description strong {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 .product-detail span {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 button {
-  display: inline-block;
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #00f;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  margin: 0 100px;
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #00f;
+    color: #fff;
+    border: none;
+    cursor: pointer;
 }
+
 /*Footer*/
-.footer-last{
-  position: relative;
-  display: flex;
-  background-color: rgb(0, 0, 0);
-  justify-content: center;
-  align-items: center;
-  padding: 15px 0px;
-  bottom: 0;
-  width: 100%;
+.footer-last {
+    position: relative;
+    display: flex;
+    background-color: rgb(0, 0, 0);
+    justify-content: center;
+    align-items: center;
+    padding: 15px 0px;
+    bottom: 0;
+    width: 100%;
 }
 
 .active {
-  color: red;
+    color: red;
 }
+
 table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  font-family: Arial, sans-serif;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-family: Arial, sans-serif;
 }
 
 thead th {
-  border: 1px solid #ddd;
-  padding: 10px;
+    border: 1px solid #ddd;
+    padding: 10px;
 }
 
 tbody td {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-bottom: none;
+    padding: 10px;
+    border: 1px solid #ddd;
+    
 }
 
 tr:nth-child(even) {
-  background-color: #f9f9f9;
+    background-color: #f9f9f9;
 }
 
 .action-buttons {
-  display: inline-flex;
-  gap: 0;
-  margin: 0px;
+    display: inline-flex;
+    gap: 0;
+    margin: 0px;
 }
+
 .action-buttons button:first-child {
-  margin-left: 5px;
+    margin-left: 5px;
 }
-.action-buttons button:last-child{
- margin-right: 5px;
+
+.action-buttons button:last-child {
+    margin-right: 5px;
 }
 
 /*Update*/
 .form-update {
-  background: #fff;
-  padding: 20px 30px;
-  border-radius: 8px;
-  width: 400px;
-  margin: 50px auto;
-  border: 1px solid black;
+    background: #fff;
+    padding: 20px 30px;
+    border-radius: 8px;
+    width: 400px;
+    margin: 50px auto;
+    border: 1px solid black;
 }
 
 .header-update {
-  font-size: 24px;
-  margin-bottom: 20px;
-  text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
 label {
-  display: block;
-  margin: 10px 0 5px;
-  font-weight: bold;
-  text-align: left;
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+    text-align: left;
 }
 
 input[type="text"],
 input[type="number"],
+input[type="email"],
+input[type="password"],
 textarea {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  margin: 0 auto 15px;
- 
- 
-}
-textarea {
-  resize: none;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    margin: 0 auto 15px;
+
+
 }
 
-.button-group {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
+textarea {
+    resize: none;
 }
 
-.button-group button {
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  margin: 0px;
+.btn-update {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 0 auto;
+    display: block;
+}
+
+.btn-update:hover {
+    background-color: #0056b3;
 }

@@ -1,7 +1,7 @@
 import  { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "../index.css";
-import { deleteById, fetchProducts } from "../axios";
+import { deleteById, fetchProducts } from "../services";
 
 const ProductsTable = () => {
   const [dataList, setDataList] = useState([]);

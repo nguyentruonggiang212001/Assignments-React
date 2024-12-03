@@ -11,6 +11,9 @@ import ProductDetailPage from './pages/ProductDetailPage';
 import ProductsTable from './admin/ProductsTable.jsx';
 import DashBoardPage from './admin/DashBoardPage.jsx';
 import ProductForm from './admin/ProductForm.jsx';
+import LoginForm from './user/loginForm.jsx';
+import User from './user/User.jsx';
+import { RegisterForm } from './user/RegisterForm.jsx';
 
 
 
@@ -30,6 +33,10 @@ function App() {
 			    <Route path="products/add" element={<ProductForm />} />
 				<Route path="products/update/:id" element={<ProductForm />} />
 			   </Route>
+			   <Route path="/user" element={<User/>}>
+               <Route path="login" element={<LoginForm />} />
+               <Route path="register" element={<RegisterForm />} />
+               </Route>
 				<Route path="*" element={<NotFoundPage/>}/>
 			 </Routes>
 			<Footer />

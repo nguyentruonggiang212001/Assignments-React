@@ -1,12 +1,13 @@
 import axios from "axios";
 
 const instance = axios.create({
-  // baseURL: "http://localhost:3000",
-  baseURL: "https://giang-json-server.onrender.com",
+  baseURL: "http://localhost:3000",
+  // baseURL: "https://giang-json-server.onrender.com",
   headers: {
     "Content-Type": "application/json",
   },
 });
+export default instance;
 
 export const fetchProducts = async (path) => {
   try {
@@ -16,7 +17,6 @@ export const fetchProducts = async (path) => {
     console.log(error);
   }
 };
-export default instance;
 
 export const getById = async (path, id) => {
   try {
@@ -36,7 +36,7 @@ export const deleteById = async (path, id) => {
   }
 };
 
-export const create = async (path, data) => {
+export const createNew = async (path, data) => {
   try {
     const res = await instance.post(`${path}`, data);
     return res;

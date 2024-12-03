@@ -1,103 +1,103 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "../index.css";
-import { create, updateById, getById } from "../axios";
+import { createNew, getById, updateById, } from "../services";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { schemaProduct } from "../schemas/productShema";
+
 
 const ProductForm = () => {
   const { id } = useParams();
-  console.log("id: ", id);
-  const nav = useNavigate();
-
-   const resetForm = {
-    title: "",
-    price: 0,
-    description: "",
-  };
-
-
-   const [product, setProduct] = useState(resetForm);
+  const nav = useNavigate(); 
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    reset,
+  } = useForm({
+    resolver: zodResolver(schemaProduct),
+  });
 
   useEffect(() => {
     if (id) {
       (async () => {
-        try {
         const data = await getById("/products", id);
-          setProduct({
-          title: data.title,
-          price: data.price,
-          description: data.description ,
-          });
-        } catch (error) {
-          console.error("Không tìm thấy sản phẩm: ", error);
-        }
+        reset(data);
       })();
     }
-  }, [id]); 
+  }, [id, reset]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setProduct((prev) => ({ ...prev, [name]: value }));
+  const handleAddProduct = async (product) => {
+    console.log(product);
+    let confirmMessage = "";
+    if (id) {
+      // logic update
+      confirmMessage = "Bạn có chắc chắn muốn cập nhật sản phẩm này?";
+      const data = await updateById("/products", id, product);
+      console.log(data);
+    } else {
+      // logic add
+      confirmMessage = "Bạn có chắc chắn muốn thêm mới sản phẩm này?";
+      const data = await createNew("/products", product);
+      console.log(data);
+    }
+    if (confirm(confirmMessage)) {
+      nav("/admin/products");
+    } else {
+      reset(); 
+    }
   };
 
-  const handleSubmit = async (e) => {
-  e.preventDefault();
-  
-  if (id) {
-  const res = await updateById("/products", id, product);
-  console.log(res);
-  if (res.status === 201) {
-    alert("Cập nhật sản phẩm thành công!");
-    }
-  } else {
-    const res = await create("/products", product);
-    console.log(res);
-    if (res.status === 204) {
-    alert("Thêm mới sản phẩm thành công!");
-    }
-  }
-  nav("/admin/products");
-  };
-  
-   function handleResetForm () {
-    if (confirm("Bạn có chắc chắn muốn reset không?")) {
-      setProduct(resetForm);
+  const handleReset = () => {
+    if (confirm("Bạn có chắc chắn muốn reset các trường?")) {
+      reset();
     }
   };
 
   return (
     <div className="form-update">
       <h1 className="header-update">{id ? "Cập nhật" : "Thêm mới"} sản phẩm</h1>
-      <form>
+      <form onSubmit={handleSubmit(handleAddProduct)}>
         <label htmlFor="title">Title</label>
         <input
           type="text"
           name="title"
           id="title"
           placeholder="Title"
-          value={product.title}
-          onChange={handleChange}
+          {...register("title", { required: true })}
         />
+        {errors.title && <p style={{color:"red"}}>{errors.title?.message}</p>}
+
         <label htmlFor="price">Price</label>
         <input
           type="number"
           name="price"
           id="price"
           placeholder="Price"
-          value={product.price}
-          onChange={handleChange}
+          {...register("price", { required: true, valueAsNumber: true })}
         />
+        {errors.price && <p style={{color:"red"}}>{errors.price?.message}</p>}
+
         <label>Description</label>
         <textarea
           name="description"
-          value={product.description}
-          onChange={handleChange}
+          id="description"
+          placeholder="Description"
+          {...register("description", { required: true })}
           rows="10"
         ></textarea>
+
         <div className="button-group">
-          <button style={{backgroundColor:"green"}}  onClick={handleSubmit}>
-          {id ? "Update" : "Add"}
-        </button>
-         <button style={{backgroundColor:"gray"}} onClick={handleResetForm}>Reset</button>
+          <button style={{ backgroundColor: "green" }} onClick={handleSubmit}>
+            {id ? "Update" : "Add"}
+          </button>{" "}
+          <button
+            style={{ backgroundColor: "gray" }}
+            onClick={handleReset}
+          >
+            Reset
+          </button>
         </div>
       </form>
     </div>
@@ -105,4 +105,3 @@ const ProductForm = () => {
 };
 
 export default ProductForm;
-
