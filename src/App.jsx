@@ -11,9 +11,10 @@ import ProductDetailPage from './pages/ProductDetailPage';
 import ProductsTable from './admin/ProductsTable.jsx';
 import DashBoardPage from './admin/DashBoardPage.jsx';
 import ProductForm from './admin/ProductForm.jsx';
-import LoginForm from './user/loginForm.jsx';
+
 import User from './user/User.jsx';
 import { RegisterForm } from './user/RegisterForm.jsx';
+import LoginForm from './user/LoginForm.jsx';
 
 
 
