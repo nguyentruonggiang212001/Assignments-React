@@ -72,7 +72,7 @@ export const RegisterForm = () => {
         />
          {errors.confirmPass && <p style={{color:"red"}}>{errors.confirmPass?.message}</p>}
          <Link to="/user/login">
-            <p type="submit" style={{color:"blue",textAlign:"left",marginBottom:"10px"}}>
+            <p type="submit" style={{color:"blue",textAlign:"left",marginBottom:"15px"}}>
               Bạn đã có tài khoản rồi à ?
             </p>
           </Link>
