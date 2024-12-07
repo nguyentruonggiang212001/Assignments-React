@@ -3,14 +3,17 @@ export const registerSchema = z
   .object({
     username: z
       .string()
+      .trim()
       .min(6, { message: "Tên người dùng phải có ít nhất 6 ký tự" }),
     email: z.string().email({ message: "Email không hợp lệ" }),
     password: z
       .string()
+      .trim()
       .min(6, { message: "Mật khẩu phải có ít nhất 6 ký tự" })
       .max(255, { message: "Mật khẩu không được vượt quá 255 ký tự" }),
     confirmPass: z
       .string()
+      .trim()
       .min(6, { message: "Mật khẩu phải có ít nhất 6 ký tự" })
       .max(255, { message: "Mật khẩu không được vượt quá 255 ký tự" }),
   })
@@ -20,9 +23,10 @@ export const registerSchema = z
   });
 
 export const loginSchema = z.object({
-  email: z.string().email({ message: "Email không hợp lệ" }),
+  email: z.string().email({ message: "Email không hợp lệ" }).trim(),
   password: z
     .string()
+    .trim()
     .min(6, { message: "Mật khẩu phải có ít nhất 6 ký tự" })
     .max(255, { message: "Mật khẩu không được vượt quá 255 ký tự" }),
 });

@@ -88,12 +88,12 @@ const ProductForm = () => {
           rows="10"
         ></textarea>
 
-        <div className="button-group">
-          <button style={{ backgroundColor: "green" }} onClick={handleSubmit}>
+        <div className="button-group" style={{textAlign:"left"}}>
+          <button style={{ backgroundColor: "green",margin:"0px" }} onClick={handleSubmit}>
             {id ? "Update" : "Add"}
           </button>{" "}
           <button
-            style={{ backgroundColor: "gray" }}
+            style={{ backgroundColor: "gray",margin:"0px"  }}
             onClick={handleReset}
           >
             Reset

@@ -24,7 +24,9 @@ const LoginForm = () => {
     console.log(handleSubmit);
     if(data.accessToken && confirm("Đăng nhập thành công bạn có muốn về trang chủ không ?")){
       localStorage.setItem("accessToken",data.accessToken)
-      localStorage.setItem("email",data?.user?.email)
+      localStorage.setItem("user",JSON.stringify(data?.user))
+      localStorage.setItem("role",data?.user?.role)
+
      Nav("/")
     }else{
       reset();

@@ -1,8 +1,8 @@
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
-import logo from '../Components/icontokyo-Photoroom.png';
-import '../index.css';
+import logo from '../Header/icontokyo-Photoroom.png';
+import '../../index.css';
 
 function Header({ toggleDarkLight, theme }) {
   return (
@@ -25,7 +25,7 @@ function Header({ toggleDarkLight, theme }) {
             <NavLink to="/contact">Contact</NavLink>
           </li>
           <li>
-            <NavLink to="/admin/products">Admin</NavLink>
+            <NavLink to="/admin/todos">Admin</NavLink>
           </li>
           <li>
             <NavLink to="/User/login"><FontAwesomeIcon icon={faUser} /></NavLink>

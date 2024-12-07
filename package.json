@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"vite\" \"json-server db.json -m ./node_modules/json-server-auth\"", 
+    "dev": "concurrently \"vite\" \"json-server db.json -m ./node_modules/json-server-auth\"",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -17,6 +17,7 @@
     "concurrently": "^9.1.0",
     "json-server": "^0.17.0",
     "json-server-auth": "^2.1.0",
+    "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.2",
