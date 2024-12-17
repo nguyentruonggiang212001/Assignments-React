@@ -97,8 +97,11 @@ const ProductForm = () => {
           {...register("description", { required: true })}
           rows="10"
         ></textarea>
-        <div className="button-group">
-          <button style={{ backgroundColor: "green" }} onClick={handleSubmit}>
+        <div className="button-group" style={{ textAlign: "left" }}>
+          <button
+            style={{ backgroundColor: "green", marginRight: "5px" }}
+            onClick={handleSubmit}
+          >
             {id ? "Update" : "Add"}
           </button>
 

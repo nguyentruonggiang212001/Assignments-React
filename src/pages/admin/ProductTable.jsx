@@ -50,6 +50,7 @@ const ProductTable = () => {
                   <button
                     className="btn btn-danger"
                     onClick={() => handleDelete(item.id)}
+                    style={{ marginRight: "5px" }}
                   >
                     Delete
                   </button>
