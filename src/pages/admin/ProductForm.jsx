@@ -32,11 +32,9 @@ const ProductForm = () => {
           ? "Bạn có chắc chắn muốn cập nhật sản phẩm không?"
           : "Bạn có chắc chắn muốn thêm sản phẩm không?"
       );
-
       if (!isConfirmed) {
         return;
       }
-
       if (id) {
         dispatch(editProduct({ id, product: dataBody }));
         nav("/");
@@ -104,7 +102,11 @@ const ProductForm = () => {
             {id ? "Update" : "Add"}
           </button>
 
-          <button style={{ backgroundColor: "gray" }} onClick={handleReset}>
+          <button
+            type="button"
+            style={{ backgroundColor: "gray" }}
+            onClick={handleReset}
+          >
             Reset
           </button>
         </div>
