@@ -294,3 +294,13 @@ textarea {
 .btn-update:hover {
     background-color: #0056b3;
 }
+
+form {
+    width: 400px;
+    max-width: 100%;
+    margin: 100px auto;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    box-shadow: 0 0 12px 12px rgba(0, 0, 0, 0.2);
+    padding: 40px;
+}

@@ -1,77 +1,22 @@
 {
-  "todos": [
+  "products": [
     {
       "title": "111111",
-      "description": "111111",
-      "status": "doing",
-      "priority": "Low",
+      "price": 111111,
+      "description": "22222222",
       "id": 1
     },
     {
       "title": "222222",
-      "description": "2222222",
-      "status": "doing",
-      "priority": "Low",
+      "price": 222222,
+      "description": "222222",
       "id": 2
     },
     {
-      "title": "333333",
-      "description": "333333",
-      "status": "doing",
-      "priority": "Low",
+      "title": "1111111",
+      "price": 11111111,
+      "description": "1111111111111",
       "id": 3
-    },
-    {
-      "title": "444444",
-      "description": "444444",
-      "status": "doing",
-      "priority": "Medium",
-      "id": 4
-    },
-    {
-      "title": "555555",
-      "description": "555555",
-      "status": "doing",
-      "priority": "High",
-      "id": 5
-    },
-    {
-      "title": "666666",
-      "description": "6666666",
-      "status": "done",
-      "priority": "Low",
-      "id": 6
-    }
-  ],
-  "users": [
-    {
-      "email": "NguyenTruongGiang@gmail.com",
-      "password": "$2a$10$3Zof3xjJt1g8XS2rAdR6JOShHttpGqpdkugVn9fDdkKJsjeYsruky",
-      "username": "giang11111111111111",
-      "confirmPass": "123456",
-      "id": 1
-    },
-    {
-      "email": "NguyenTruongGiang123@gmail.com",
-      "password": "$2a$10$4sshRnWgnrNs7H584C7P..TbWvDC.lZHIa.p0PICb5EmLsyGVDFN6",
-      "username": "giang11111111111111",
-      "confirmPass": "123456",
-      "id": 2
-    },
-    {
-      "email": "admin@gmail.com",
-      "password": "$2a$10$D6td.lsZmT6FbfgsZX75i.XJgJd6pDJHJbTCRsCqerGHxNFWVtg1C",
-      "username": "giang123",
-      "confirmPass": "123456",
-      "id": 3,
-      "role": "admin"
-    },
-    {
-      "email": "giangnguyen@gmail.com",
-      "password": "$2a$10$aNVclQYUHwL.Nhgj8N99UeL9Aj61sK/Au0F2mp5E6/BBCjOn8prUS",
-      "username": "giang123",
-      "confirmPass": "123456",
-      "id": 4
     }
   ]
 }
