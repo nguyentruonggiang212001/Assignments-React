@@ -10,6 +10,16 @@ export const getById = async (id) => {
   return data;
 };
 
+export const getByCategory = async (category) => {
+  try {
+    const { data } = await instance.get(`/products?category=${category}`);
+    return data;
+  } catch (error) {
+    console.error("Lỗi khi lấy sản phẩm theo danh mục:", error);
+    return [];
+  }
+};
+
 export const addProduct = async (product) => {
   const { data } = await instance.post("/products", product);
   return data;

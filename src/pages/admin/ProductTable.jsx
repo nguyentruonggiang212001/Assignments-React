@@ -24,11 +24,11 @@ const ProductTable = () => {
   if (error) return <p>{error}</p>;
   return (
     <>
-      <h1>Products List</h1>
-      <Link to="/add">
+      <h1 style={{ marginTop: "200px", textAlign: "center" }}>Products List</h1>
+      <Link to={`/admin/products/add`}>
         <button>Add Product</button>
       </Link>
-      <table className="table table-bordered table-striped">
+      <table className="product-table">
         <thead>
           <tr>
             <th>ID</th>
@@ -46,7 +46,7 @@ const ProductTable = () => {
                 <td>{item.title}</td>
                 <td>{item.price}</td>
                 <td>{item.description}</td>
-                <td>
+                <td style={{ display: "flex" }}>
                   <button
                     className="btn btn-danger"
                     onClick={() => handleDelete(item.id)}
@@ -54,7 +54,10 @@ const ProductTable = () => {
                   >
                     Delete
                   </button>
-                  <Link className="btn btn-warning" to={`/update/${item.id}`}>
+                  <Link
+                    className="btn btn-warning"
+                    to={`/admin/products/update/${item.id}`}
+                  >
                     Update
                   </Link>
                 </td>
