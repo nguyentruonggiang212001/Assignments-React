@@ -1,9 +1,19 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { getById } from "../services/productServices";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { schemaCart } from "../schemas/cartShema";
 
 const CartList = ({ cart, updateCart, removeFromCart }) => {
   const [product, setProduct] = useState({});
+
+  const {
+    register,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schemaCart),
+  });
 
   useEffect(() => {
     (async () => {
@@ -14,17 +24,22 @@ const CartList = ({ cart, updateCart, removeFromCart }) => {
 
   const totalProduct = (cart) => cart.quantity * product.price;
 
-  const handleQuantityChange = (productID, cart) => {
-    if (cart.quantity + cart <= 0) {
-      alert("Số lượng không thể nhỏ hơn 1!");
+  const handleQuantityChange = (productID, quantity) => {
+    if (quantity < 0) {
+      alert("Số lượng không thể nhỏ hơn 0!");
       return;
     }
-    if (cart > product.stock) {
-      alert(`Số lượng không thể vượt quá tồn kho (${product.stock})!`);
+    if (quantity > product.stock) {
+      alert(`Số lượng không thể vượt quá tồn kho ${product.stock}`);
       return;
     }
 
-    updateCart(productID, cart);
+    const newCart = {
+      ...cart,
+      quantity,
+    };
+
+    updateCart(productID, newCart);
   };
 
   const handleRemoveProduct = (cartId) => {
@@ -59,7 +74,32 @@ const CartList = ({ cart, updateCart, removeFromCart }) => {
               >
                 -
               </button>
-              <span className="quantity">{cart.quantity}</span>
+              <div className="quantity">
+                <input
+                  style={{
+                    width: "20px",
+                    border: "none",
+                    outline: "none",
+                    textAlign: "center",
+                  }}
+                  type="text"
+                  value={cart.quantity}
+                  id="number"
+                  {...register("number", {
+                    required: true,
+                    valueAsNumber: true,
+                  })}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^-?\d*$/.test(value)) {
+                      handleQuantityChange(cart.id, parseInt(value) || 0);
+                    }
+                  }}
+                />
+                {errors.number && (
+                  <p style={{ color: "red" }}>{errors?.number?.message}</p>
+                )}
+              </div>
               <button
                 className="right"
                 onClick={() => handleQuantityChange(cart.id, cart.quantity + 1)}

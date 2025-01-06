@@ -250,22 +250,24 @@ header .nav-header img {
     font-size: 23px;
     cursor: pointer;
 }
-.header-icon-cart span{
+.header-icon-cart div{
     position: absolute;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 14px;
-    height: 14px;
-    font-size: 10px;
-    right: 69px;
-    top: -7px;
+    width: 16px;
+    height: 16px;
+    font-size: 9px;
+    right: -5px;
+    top: -8px;
     border-radius: 50%;
     background: #e05000;
     color: #fff;
     font-weight: 500;
 }
 .header-icon  i{
+    position: relative;
+    display: flex;
     color: black;
 }
 .header-icon-bar{
@@ -439,7 +441,7 @@ header .nav-header img {
     font-size: 14px;
     cursor: pointer;
     transition: border-color 0.3s;
-    width: 150px;
+    width: 151px;
     margin: 10px;
 }
 .option select:hover,.option-sub select:hover{
@@ -1135,11 +1137,12 @@ header .nav-header img {
 .container .row .cart-content{
     display: flex;
     padding: 20px;
-    background-color: #fff;
     justify-content: space-between;
+    border: 1px solid #80808059;
+    margin-bottom: 10px;
 }
 .container .row .cart-content .cart-box{
-    max-width: 148px;
+    max-width: 100px;
 }
 .container .row .cart-content p {
     margin: 10px 0px;
@@ -1163,7 +1166,8 @@ header .nav-header img {
 }
 .container .row .cart-content-sub{
     padding: 20px;
-    background-color: #fff;
+    border: 1px solid #80808059;
+    height: 217px;
 }
 .container .row .cart-content-sub .cart-content-sub-product {
     text-align: left;
@@ -1344,6 +1348,7 @@ tr:nth-child(even) {
 .header-icon-bar {
     display: block;
 }
+
 .container .nav-sub {
     position: fixed;
     left: 0;
@@ -1499,7 +1504,7 @@ tr:nth-child(even) {
     font-size: 18px;
 }
 .header-contenxt {
-    margin-top: 108px;
+    margin-top: 180px;
 }
 .container .row .detail-img {
     width: 40%;
@@ -1555,6 +1560,9 @@ tr:nth-child(even) {
 @media screen and (max-width: 589.98px) {
  .container {
  padding: 0 2rem;
+}
+.user-email{
+    display: none;
 }
 .text-center{
     font-size: 25px;

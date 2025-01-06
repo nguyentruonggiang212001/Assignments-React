@@ -6,19 +6,18 @@ import logo from "../img/icontokyo-Photoroom.png";
 import banner from "../img/banner.jpg";
 import logoMobie from "../img/LogoMenuMobile.0bf1ee6a.svg";
 import { AuthContext } from "../contexts/AuthContext";
+import { useSelector } from "react-redux";
 
 const Header = () => {
   const [search, setSearch] = useState("");
   const { setSearchTerm } = useContext(AuthContext);
-
   const handleSearchInputChange = (event) => {
     setSearch(event.target.value.trim().toLowerCase());
   };
-
   const handleSearchSubmit = () => {
     setSearchTerm(search);
   };
-
+  const { carts } = useSelector((state) => state.carts);
   const { user, logout } = useContext(AuthContext);
   return (
     <div>
@@ -49,11 +48,15 @@ const Header = () => {
             <div className="header-icon">
               <div className="header-icon-cart">
                 <Link to="/cart">
-                  <i className="fa-solid fa-cart-shopping"></i>
+                  <i className="fa-solid fa-cart-shopping">
+                    <div>{carts.length}</div>
+                  </i>
                 </Link>
               </div>
               <div className="header-icon-box">
-                <i className="fa-solid fa-box"></i>
+                <Link to="/admin/products">
+                  <i className="fa-solid fa-box"></i>
+                </Link>
               </div>
               {user?.email ? (
                 <div
@@ -63,12 +66,14 @@ const Header = () => {
                     alignItems: "center",
                   }}
                 >
-                  <span> {user.email}</span>
+                  <span className="user-email"> {user.email}</span>
                   <div style={{ marginLeft: "5px" }}>
-                    <i
-                      onClick={logout}
-                      className="fa-solid fa-arrow-right-from-bracket"
-                    ></i>
+                    <Link to="/">
+                      <i
+                        onClick={logout}
+                        className="fa-solid fa-arrow-right-from-bracket"
+                      ></i>
+                    </Link>
                   </div>
                 </div>
               ) : (

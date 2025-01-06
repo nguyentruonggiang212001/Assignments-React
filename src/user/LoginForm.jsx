@@ -12,7 +12,6 @@ const LoginForm = () => {
     register,
     formState: { errors },
     handleSubmit,
-
     reset,
   } = useForm({ resolver: zodResolver(loginSchema) });
 
@@ -20,16 +19,17 @@ const LoginForm = () => {
 
   const handleLogin = async (dataBody) => {
     const data = await authRequest("/login", dataBody);
-    if (
-      data.accessToken &&
-      confirm("Đăng nhập thành công bạn có muốn về trang chủ không ?")
-    ) {
-      Nav("/admin/products");
+    if (data.accessToken && confirm("Đăng nhập thành công ")) {
+      Nav("/");
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("email", data?.user?.email);
       localStorage.setItem("role", data?.user?.role);
       localStorage.setItem("user", JSON.stringify(data?.user));
       setStateUser(!stateUser);
+
+      if (data.user.role === "admin") {
+        Nav("/admin/products");
+      } else Nav("/");
     } else {
       reset();
     }

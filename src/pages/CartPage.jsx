@@ -13,31 +13,26 @@ import CartList from "./CartList";
 const CartPage = () => {
   const { carts } = useSelector((state) => state.carts);
   const dispatch = useDispatch();
-
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
   useEffect(() => {
-    dispatch(fetchCarts());
-  }, [dispatch]);
-
+    if (user?.id) {
+      dispatch(fetchCarts(user.id));
+    }
+  }, [user?.id, dispatch]);
   const updateCart = (id, cart) => {
     dispatch(editCarts({ id, cart }));
   };
-
   const removeFromCart = (cartId) => {
     dispatch(removeCarts(cartId));
   };
-
-  const totalProduct = (cart, product) => {
-    if (!product || !product.price) return 0;
-    return cart.quantity * product.price;
+  const totalAllProduct = () => {
+    return (
+      carts &&
+      carts.reduce((cur, acc) => {
+        return cur + acc.cartPrice * acc.quantity;
+      }, 0)
+    );
   };
-
-  const totalAllProduct = (carts) => {
-    return carts.reduce((total, cart) => {
-      const productTotal = totalProduct(cart, cart.product);
-      return total + productTotal;
-    }, 0);
-  };
-
   return (
     <div>
       <section>
@@ -91,14 +86,15 @@ const CartPage = () => {
           <div className="row">
             <div className="col-lg-8 col-sm-12 col-12">
               <div>
-                {carts.map((cart) => (
-                  <CartList
-                    key={cart.id}
-                    cart={cart}
-                    updateCart={updateCart}
-                    removeFromCart={removeFromCart}
-                  />
-                ))}
+                {carts &&
+                  carts.map((cart) => (
+                    <CartList
+                      key={cart.id}
+                      cart={cart}
+                      updateCart={updateCart}
+                      removeFromCart={removeFromCart}
+                    />
+                  ))}
               </div>
             </div>
             <div className="col-lg-4 col-sm-12 col-12">
@@ -109,9 +105,7 @@ const CartPage = () => {
                 <div className="cart-content-total">
                   <p>
                     Tổng giá trị đơn hàng:
-                    <span id="total-price">
-                      {totalAllProduct(carts).toFixed(2)}$
-                    </span>
+                    <span id="total-price">{totalAllProduct()}$</span>
                   </p>
                 </div>
                 <button

@@ -6,8 +6,8 @@ import {
   updateCart,
 } from "../../services/cartServices";
 
-export const fetchCarts = createAsyncThunk("carts/fetchCarts", async () => {
-  return await getAllCart();
+export const fetchCarts = createAsyncThunk("carts/fetchCarts", async (id) => {
+  return await getAllCart(id);
 });
 
 export const createCart = createAsyncThunk("cart/createCarts", async (cart) => {

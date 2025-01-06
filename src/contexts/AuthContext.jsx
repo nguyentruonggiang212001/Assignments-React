@@ -1,4 +1,6 @@
 import { createContext, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { resetCarts } from "../features/products/cartSlice";
 
 export const AuthContext = createContext();
 
@@ -7,6 +9,7 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState();
   const [stateUser, setStateUser] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("user") || "{}");
@@ -17,6 +20,7 @@ const AuthProvider = ({ children }) => {
     localStorage.removeItem("user");
     localStorage.removeItem("userId");
     setStateUser(!stateUser);
+    dispatch(resetCarts());
   };
   return (
     <AuthContext.Provider

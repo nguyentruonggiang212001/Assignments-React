@@ -30,10 +30,10 @@ const ProductDetailPage = () => {
     if (user?.id) {
       dispatch(fetchCarts(user.id));
     }
-  }, [user.id, dispatch]);
+  }, [user?.id, dispatch]);
 
   const addCart = async (productId, product) => {
-    const key = `${product.title}_${product.id}`;
+    const key = `${product.title}_${product.id}_${user.name}_${user.id}`;
 
     // Kiểm tra nếu số lượng trong giỏ hàng đã bằng hoặc lớn hơn số lượng tồn kho
     const cartQuantity = carts.find((item) => item.id === key)?.quantity || 0;
@@ -59,13 +59,14 @@ const ProductDetailPage = () => {
         ...existItem,
         quantity: existItem.quantity + 1,
       };
+      console.log(updateItem.id);
       dispatch(editCarts({ id: updateItem.id, cart: updateItem }));
       alert("Sản phẩm đã được cập nhật số lượng trong giỏ hàng!");
       return;
+    } else {
+      dispatch(createCart(cartInfor));
+      alert("Sản phẩm đã được thêm vào giỏ hàng");
     }
-
-    dispatch(createCart(cartInfor));
-    alert("Sản phẩm đã được thêm vào giỏ hàng");
   };
 
   useEffect(() => {

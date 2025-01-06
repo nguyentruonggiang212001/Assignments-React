@@ -2,19 +2,19 @@
   "products": [
     {
       "id": 1,
-      "title": "Essence Mascara Lash Princess",
+      "title": "giang123",
       "description": "The Essence Mascara Lash Princess is a popular mascara known for its volumizing and lengthening effects. Achieve dramatic lashes with this long-lasting and cruelty-free formula.",
       "category": "beauty",
-      "price": 9,
+      "price": 2,
       "discountPercentage": 7.17,
       "rating": 4.94,
-      "stock": 5,
+      "stock": 3,
       "tags": [
         "beauty",
         "mascara"
       ],
       "brand": "Essence",
-      "sku": "RCH45Q1A",
+      "sku": "1231231asdsa",
       "weight": 2,
       "dimensions": {
         "width": 23.17,
@@ -58,7 +58,7 @@
       "images": [
         "https://cdn.dummyjson.com/products/images/beauty/Essence%20Mascara%20Lash%20Princess/1.png"
       ],
-      "thumbnail": "https://cdn.dummyjson.com/products/images/beauty/Essence%20Mascara%20Lash%20Princess/thumbnail.png"
+      "thumbnail": "https://res.cloudinary.com/dlfijfzkt/image/upload/v1736068226/y2sxbbjx9hkapgdobm0b.jpg"
     },
     {
       "id": 2,
@@ -11803,6 +11803,94 @@
         "https://cdn.dummyjson.com/products/images/womens-watches/Women's%20Wrist%20Watch/3.png"
       ],
       "thumbnail": "https://cdn.dummyjson.com/products/images/womens-watches/Women's%20Wrist%20Watch/thumbnail.png"
+    },
+    {
+      "title": "12333333qewe",
+      "price": 33333333333,
+      "description": "qweqwewq",
+      "thumbnail": "https://res.cloudinary.com/dlfijfzkt/image/upload/v1736068824/xlt6gt3tlbqqydsqspff.jpg",
+      "brand": "Essence",
+      "sku": "1111111111111111",
+      "category": "skin-care",
+      "stock": 4,
+      "id": 195
+    },
+    {
+      "title": "12333333qewe",
+      "price": 33333333333,
+      "description": "qweqwewq",
+      "thumbnail": "https://res.cloudinary.com/dlfijfzkt/image/upload/v1736068825/c5qqheiy6ydgtpjpi85s.jpg",
+      "brand": "Essence",
+      "sku": "1111111111111111",
+      "category": "skin-care",
+      "stock": 4,
+      "id": 196
+    },
+    {
+      "title": "12333333qewe",
+      "price": 33333333333,
+      "description": "qweqwewq",
+      "thumbnail": "https://res.cloudinary.com/dlfijfzkt/image/upload/v1736068825/whuxkx27olnojyldltpz.jpg",
+      "brand": "Essence",
+      "sku": "1111111111111111",
+      "category": "skin-care",
+      "stock": 4,
+      "id": 197
+    },
+    {
+      "title": "12333333qewe",
+      "price": 33333333333,
+      "description": "qweqwewq",
+      "thumbnail": "https://res.cloudinary.com/dlfijfzkt/image/upload/v1736068825/gjprtuqfpnjq1f1cwvvv.jpg",
+      "brand": "Essence",
+      "sku": "1111111111111111",
+      "category": "skin-care",
+      "stock": 4,
+      "id": 198
+    },
+    {
+      "title": "12333333qewe",
+      "price": 33333333333,
+      "description": "qweqwewq",
+      "thumbnail": "https://res.cloudinary.com/dlfijfzkt/image/upload/v1736068826/bata5xx2c0xggmisfd3m.jpg",
+      "brand": "Essence",
+      "sku": "1111111111111111",
+      "category": "skin-care",
+      "stock": 4,
+      "id": 199
+    },
+    {
+      "title": "12333333qewe",
+      "price": 33333333333,
+      "description": "qweqwewq",
+      "thumbnail": "https://res.cloudinary.com/dlfijfzkt/image/upload/v1736068827/h2u7ncikfr76qfiksutk.jpg",
+      "brand": "Essence",
+      "sku": "1111111111111111",
+      "category": "skin-care",
+      "stock": 4,
+      "id": 200
+    },
+    {
+      "title": "12333333qewe",
+      "price": 33333333333,
+      "description": "qweqwewq",
+      "thumbnail": "https://res.cloudinary.com/dlfijfzkt/image/upload/v1736068828/dha67kn7ah4tojsyltzw.jpg",
+      "brand": "Essence",
+      "sku": "1111111111111111",
+      "category": "skin-care",
+      "stock": 4,
+      "id": 201
+    },
+    {
+      "title": "12333333qewe",
+      "price": 33333333333,
+      "description": "qweqwewq",
+      "thumbnail": "https://res.cloudinary.com/dlfijfzkt/image/upload/v1736068828/uctcto9p58nvbffpdpue.jpg",
+      "brand": "Essence",
+      "sku": "1111111111111111",
+      "category": "skin-care",
+      "stock": 4,
+      "id": 202
     }
   ],
   "users": [
@@ -11811,6 +11899,7 @@
       "password": "$2a$10$3Zof3xjJt1g8XS2rAdR6JOShHttpGqpdkugVn9fDdkKJsjeYsruky",
       "username": "giang11111111111111",
       "confirmPass": "123456",
+      "role": "user",
       "id": 1
     },
     {
@@ -11818,15 +11907,49 @@
       "password": "$2a$10$pAg4oM7t0uZ5A.7zyVCe.egmgFc9uOpCGFkXc9jB5TXY2aRkqMEda",
       "username": "giang11111111111111",
       "confirmPass": "123456",
-      "id": 2
+      "id": 2,
+      "role": "admin"
+    },
+    {
+      "email": "123@gmail.com",
+      "password": "$2a$10$RhmnMZqE3xJovcvLWIUfbuVYitoVQ80HKjf1TNlMUN5spqXbq4xcq",
+      "username": "giang123",
+      "confirmPass": "123456",
+      "role": "user",
+      "id": 3
+    },
+    {
+      "email": "giang@gmail.com",
+      "password": "$2a$10$iKRxBb3BBeFwZEq1U3UfW.23hTC6nJ5e6b9TXmZ6n51I/fWL9mf6.",
+      "username": "1234gasd",
+      "confirmPass": "123456",
+      "role": "user",
+      "id": 4
+    },
+    {
+      "email": "cauvang@gmail.com",
+      "password": "$2a$10$.JEgQIXCaxT2J0qq9VAjJu85OBDnv2aZjBbj45KQ.2YKovoQwykFu",
+      "username": "hehehehe",
+      "confirmPass": "123456",
+      "role": "user",
+      "id": 5
+    },
+    {
+      "email": "giangnguyen@gmail.com",
+      "password": "$2a$10$2OHlWOR55eyXzK3a70jcXOUT4Prb5IWLNJDmU1o0J5jSHA8DPtAeK",
+      "username": "giang123",
+      "confirmPass": "123456",
+      "role": "user",
+      "id": 6
+    },
+    {
+      "email": "giang123@gmail.com",
+      "password": "$2a$10$0HX32Ar9NIy/69UUfbgGLeN1aR8.yQ2sA6YFd8gFS76Od.n8c6Fve",
+      "username": "giang123",
+      "confirmPass": "123456",
+      "role": "user",
+      "id": 7
     }
   ],
-  "carts": [
-    {
-      "productId": "1",
-      "cartPrice": 9,
-      "quantity": 5,
-      "id": "Essence Mascara Lash Princess_1"
-    }
-  ]
+  "carts": []
 }

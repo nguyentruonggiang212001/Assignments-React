@@ -10,14 +10,17 @@ const initialState = {
 const cartsSlice = createSlice({
   name: "carts",
   initialState,
-  reducers: {},
+  reducers: {
+    resetCarts: (state) => {
+      state.carts = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchCarts.pending, (state) => {
         state.loading = true;
       })
       .addCase(fetchCarts.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.loading = false;
         state.carts = action.payload;
       })
@@ -67,6 +70,8 @@ const cartsSlice = createSlice({
       });
   },
 });
+
+export const { resetCarts } = cartsSlice.actions;
 
 const cartsReducer = cartsSlice.reducer;
 

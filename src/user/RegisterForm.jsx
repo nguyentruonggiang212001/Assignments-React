@@ -14,7 +14,8 @@ export const RegisterForm = () => {
   } = useForm({ resolver: zodResolver(registerSchema) });
 
   const handleRegisterUser = async (dataBody) => {
-    const data = await authRequest("/register", dataBody);
+    const dataToSend = { ...dataBody, role: "user" };
+    const data = await authRequest("/register", dataToSend);
     if (data.user && confirm("Đăng nhập ngay ?")) Nav("/user/login");
     else {
       reset();

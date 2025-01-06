@@ -9,6 +9,7 @@ import slider1 from "../img/slider1.webp";
 import slider2 from "../img/slider2.webp";
 import slider3 from "../img/slider3.webp";
 import { AuthContext } from "../contexts/AuthContext";
+import useDebounce from "./../hook/useDebounce";
 
 const HomePage = () => {
   const { products, loading, error } = useSelector((state) => state.products);
@@ -17,7 +18,8 @@ const HomePage = () => {
   const dotsRef = useRef([]);
   const [itemOffset, setItemOffset] = useState(0);
   const { searchTerm } = useContext(AuthContext);
-  const itemsPerPage = 12;
+  const debouncedSearchTerm = useDebounce(searchTerm, 2000);
+  const itemsPerPage = 9;
   const [selectedCategory, setSelectedCategory] = useState("");
   const [sortOption, setSortOption] = useState("all");
   const dataSlide = [
@@ -29,7 +31,7 @@ const HomePage = () => {
   const filteredProducts = products.filter((product) => {
     const matchesSearchTerm = product.title
       .toLowerCase()
-      .includes(searchTerm.toLowerCase());
+      .includes(debouncedSearchTerm.toLowerCase());
     const matchesCategory =
       !selectedCategory || product.category === selectedCategory;
     return matchesSearchTerm && matchesCategory;
@@ -49,14 +51,12 @@ const HomePage = () => {
         return 0;
     }
   });
-
   // Tính toán số trang và sản phẩm hiển thị trên trang hiện tại
   const pageCount = Math.ceil(sortedProducts.length / itemsPerPage);
   const currentItems = sortedProducts.slice(
     itemOffset,
     itemOffset + itemsPerPage
   );
-
   // Cập nhật itemOffset khi thay đổi từ khóa tìm kiếm
   useEffect(() => {
     if (searchTerm === "") {

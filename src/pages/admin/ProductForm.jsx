@@ -6,16 +6,14 @@ import { useEffect, useState } from "react";
 import { getById } from "../../services/productServices";
 import { useDispatch } from "react-redux";
 import instance from "../../services";
+import { fetchProducts } from "../../features/products/productAction";
 const { VITE_CLOUD_NAME, VITE_UPLOAD_PRESET } = import.meta.env;
 const ProductForm = () => {
   const { id } = useParams();
   const nav = useNavigate();
   const dispatch = useDispatch();
-
   const [thumbnailUrl, setThumbnailUrl] = useState(null);
-  // State để lưu trữ lựa chọn của người dùng
   const [thumbnailOption, setThumbnailOption] = useState("keep");
-
   const {
     register,
     formState: { errors },
@@ -25,6 +23,8 @@ const ProductForm = () => {
     resolver: zodResolver(schemaProduct),
   });
 
+  const [isAdmin, setIsAdmin] = useState(false);
+
   const handleReset = () => {
     if (confirm("Bạn có chắc chắn muốn reset các trường?")) {
       reset();
@@ -32,15 +32,42 @@ const ProductForm = () => {
   };
 
   useEffect(() => {
-    console.log(VITE_CLOUD_NAME);
+    const role = localStorage.getItem("role");
+    if (role === "admin") {
+      setIsAdmin(true);
+      dispatch(fetchProducts());
+    } else {
+      setIsAdmin(false);
+      return;
+    }
+
     if (id) {
       (async () => {
-        const data = await getById(id);
-        reset(data);
-        setThumbnailUrl(data.thumbnail);
+        try {
+          const data = await getById(id);
+          reset(data);
+          setThumbnailUrl(data.thumbnail);
+        } catch (error) {
+          console.error("Failed to fetch product:", error);
+        }
       })();
     }
-  }, [id]);
+  }, [id, dispatch, reset]);
+
+  if (!isAdmin) {
+    return (
+      <h2
+        style={{
+          textAlign: "center",
+          marginTop: "205px",
+          color: "red",
+          fontSize: "20px",
+        }}
+      >
+        Bạn không có quyền truy cập trang này!
+      </h2>
+    );
+  }
 
   const uploadImage = async (file) => {
     const formData = new FormData();
@@ -57,7 +84,6 @@ const ProductForm = () => {
     console.log(data);
     return data.secure_url;
   };
-
   const onSubmit = async (product) => {
     try {
       let updatedProduct = { ...product };
@@ -92,10 +118,19 @@ const ProductForm = () => {
       console.error(error);
     }
   };
-
   return (
     <div className="form-user" style={{ marginTop: "200px" }}>
-      <h1 className="header-update">{id ? "Cập nhật" : "Thêm mới"} sản phẩm</h1>
+      <h1
+        className="header-update"
+        style={{
+          fontSize: "25px",
+          fontWeight: "bold",
+          textAlign: "center",
+          marginBottom: "20px",
+        }}
+      >
+        {id ? "Cập nhật" : "Thêm mới"} sản phẩm
+      </h1>
       <form className="product-form" onSubmit={handleSubmit(onSubmit)}>
         <label htmlFor="title">Title</label>
         <input
@@ -119,7 +154,6 @@ const ProductForm = () => {
         {errors.price && (
           <p style={{ color: "red" }}>{errors.price?.message}</p>
         )}
-
         <label>Description</label>
         <textarea
           name="description"
@@ -128,7 +162,6 @@ const ProductForm = () => {
           {...register("description", { required: true })}
           rows="10"
         ></textarea>
-
         <label htmlFor="brand">Brand</label>
         <input
           type="text"
@@ -140,7 +173,6 @@ const ProductForm = () => {
         {errors.brand && (
           <p style={{ color: "red" }}>{errors.brand?.message}</p>
         )}
-
         <label htmlFor="sku">SKU</label>
         <input
           type="text"
@@ -150,7 +182,17 @@ const ProductForm = () => {
           {...register("sku", { required: true })}
         />
         {errors.sku && <p style={{ color: "red" }}>{errors.sku?.message}</p>}
-
+        <label htmlFor="stock">Stock</label>
+        <input
+          type="number"
+          name="stock"
+          id="stock"
+          placeholder="Stock"
+          {...register("stock", { required: true, valueAsNumber: true })}
+        />
+        {errors.stock && (
+          <p style={{ color: "red" }}>{errors.stock?.message}</p>
+        )}
         <label htmlFor="category">Category</label>
         <select
           id="category"
@@ -185,7 +227,6 @@ const ProductForm = () => {
         {errors.category && (
           <p style={{ color: "red" }}>{errors.category?.message}</p>
         )}
-
         <label htmlFor="thumbnailOption" className="formlabel">
           Choose Thumbnail Option
         </label>
@@ -199,7 +240,6 @@ const ProductForm = () => {
           <option value="link">Add Thumbnail from Link</option>
           <option value="upload">Upload Thumbnail from Local</option>
         </select>
-
         <label htmlFor="thumbnail" className="form-label">
           Thumbnail
         </label>
@@ -230,7 +270,10 @@ const ProductForm = () => {
           />
         )}
 
-        <div className="button-group" style={{ textAlign: "left" }}>
+        <div
+          className="button-group"
+          style={{ textAlign: "left", marginTop: "20px" }}
+        >
           <button
             style={{ backgroundColor: "green", marginRight: "5px" }}
             onClick={handleSubmit}
@@ -238,7 +281,6 @@ const ProductForm = () => {
           >
             {id ? "Update" : "Add"}
           </button>
-
           <button
             type="button"
             className="btn btn-primary"

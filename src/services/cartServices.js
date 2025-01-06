@@ -1,8 +1,7 @@
 import instance from ".";
 
-export const getAllCart = async () => {
-  const { data } = await instance.get("/carts");
-  console.log(data);
+export const getAllCart = async (id) => {
+  const { data } = await instance.get(`carts?userId=${id}`);
   return data;
 };
 
@@ -36,9 +35,7 @@ export const deleteCart = async (id) => {
   }
 };
 
-export const updateCart = async (id, product) => {
-  console.log(id, product);
-
-  const { data } = await instance.patch(`/carts/${id}`, { quantity: product });
+export const updateCart = async (id, cart) => {
+  const { data } = await instance.patch(`/carts/${id}`, cart);
   return data;
 };
