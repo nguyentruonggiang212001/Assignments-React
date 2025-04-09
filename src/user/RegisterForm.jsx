@@ -1,11 +1,13 @@
 import { useForm } from "react-hook-form";
-import { zodResolver } from "./../../node_modules/@hookform/resolvers/zod/src/zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
-import { authRequest } from "../services/auth";
 import { registerSchema } from "../schemas/auth";
+import { authRequestRegister } from "../services/auth";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const RegisterForm = () => {
-  const Nav = useNavigate();
+  const navigate = useNavigate();
   const {
     register,
     formState: { errors },
@@ -14,11 +16,22 @@ export const RegisterForm = () => {
   } = useForm({ resolver: zodResolver(registerSchema) });
 
   const handleRegisterUser = async (dataBody) => {
-    const dataToSend = { ...dataBody, role: "user" };
-    const data = await authRequest("/register", dataToSend);
-    if (data.user && confirm("Đăng nhập ngay ?")) Nav("/user/login");
-    else {
-      reset();
+    const { confirmPass, ...others } = dataBody;
+
+    try {
+      const data = await authRequestRegister("/auth/register", others);
+
+      if (data) {
+        toast.success("Đăng ký thành công!");
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
+      } else {
+        toast.error("Đăng ký thất bại, vui lòng thử lại!");
+        reset();
+      }
+    } catch (error) {
+      toast.error("Lỗi hệ thống, vui lòng thử lại sau!");
     }
   };
 
@@ -29,61 +42,62 @@ export const RegisterForm = () => {
         <label htmlFor="Email">Email</label>
         <input
           type="email"
-          name="email"
           id="email"
           placeholder="Email"
           {...register("email")}
         />
-        {errors.email && (
-          <p style={{ color: "red" }}>{errors.email?.message}</p>
-        )}
+        {errors.email && <p style={{ color: "red" }}>{errors.email.message}</p>}
 
-        <label htmlFor="username">Username</label>
+        <label htmlFor="username">Tên người dùng</label>
         <input
           type="text"
-          name="username"
           id="username"
-          placeholder="Username"
+          placeholder="Tên người dùng"
           {...register("username")}
         />
         {errors.username && (
-          <p style={{ color: "red" }}>{errors.username?.message}</p>
+          <p style={{ color: "red" }}>{errors.username.message}</p>
         )}
 
-        <label htmlFor="Password">Password</label>
+        <label htmlFor="Password">Mật Khẩu</label>
         <input
           type="password"
-          name="password"
           id="password"
-          placeholder="Password"
+          placeholder="Mật Khẩu"
           {...register("password")}
         />
         {errors.password && (
-          <p style={{ color: "red" }}>{errors.password?.message}</p>
+          <p style={{ color: "red" }}>{errors.password.message}</p>
         )}
 
-        <label htmlFor="confirmPass">ConfirmPass</label>
+        <label htmlFor="confirmPass">Xác Nhận Mật Khẩu</label>
         <input
           type="password"
-          name="confirmPass"
           id="confirmPass"
-          placeholder="ConfirmPass"
+          placeholder="Xác Nhận Mật Khẩu"
           {...register("confirmPass")}
         />
         {errors.confirmPass && (
-          <p style={{ color: "red" }}>{errors.confirmPass?.message}</p>
+          <p style={{ color: "red" }}>{errors.confirmPass.message}</p>
         )}
+
+        <label htmlFor="phone">Số điện thoại</label>
+        <input
+          type="text"
+          id="phone"
+          placeholder="Số điện thoại"
+          {...register("phone")}
+        />
+        {errors.phone && <p style={{ color: "red" }}>{errors.phone.message}</p>}
+
         <Link to="/user/login">
-          <p
-            type="submit"
-            style={{ color: "blue", textAlign: "left", marginBottom: "15px" }}
-          >
-            Bạn đã có tài khoản rồi à ?
+          <p style={{ color: "blue", textAlign: "left", marginBottom: "15px" }}>
+            Bạn đã có tài khoản rồi à?
           </p>
         </Link>
         <div>
           <button className="btn-user" type="submit">
-            Register
+            Đăng Ký
           </button>
         </div>
       </form>

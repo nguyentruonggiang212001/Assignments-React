@@ -1,25 +1,37 @@
 import { createContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { resetCarts } from "../features/products/cartSlice";
+import { fetchCarts } from "../features/products/cartAction";
 
 export const AuthContext = createContext();
 
 // eslint-disable-next-line react/prop-types
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState();
-  const [stateUser, setStateUser] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [user, setUser] = useState(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("user") || "{}");
-    setUser(data);
-  }, [stateUser]);
+    const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+    if (storedUser && storedUser._id) {
+      setUser(storedUser);
+      dispatch(fetchCarts(storedUser._id));
+    }
+  }, [dispatch]);
+
+  const login = (userData) => {
+    localStorage.setItem("user", JSON.stringify(userData));
+    setUser(userData);
+    dispatch(fetchCarts(userData._id));
+  };
 
   const logout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("userId");
-    setStateUser(!stateUser);
+    localStorage.removeItem("role");
+    localStorage.removeItem("email");
+    localStorage.removeItem("accessToken");
+
+    setUser(null);
     dispatch(resetCarts());
   };
   return (
@@ -27,10 +39,8 @@ const AuthProvider = ({ children }) => {
       value={{
         user,
         logout,
-        setStateUser,
-        stateUser,
-        searchTerm,
-        setSearchTerm,
+        login,
+        setUser,
       }}
     >
       {children}

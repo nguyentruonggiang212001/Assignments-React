@@ -1,11 +1,13 @@
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Outlet } from "react-router-dom";
 
 const User = () => {
   return (
-    <div>
-      <h1></h1>
+    <>
+      <ToastContainer position="top-right" autoClose={2000} />
       <Outlet />
-    </div>
+    </>
   );
 };
 

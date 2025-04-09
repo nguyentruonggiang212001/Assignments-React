@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getByCategory, getById } from "../services/productServices";
 import "../css/style.css";
@@ -11,61 +11,129 @@ import ship from "../img/Ship.png";
 import process from "../img/process.svg";
 import moneyBag from "../img/money-bag.png";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  createCart,
-  editCarts,
-  fetchCarts,
-} from "./../features/products/cartAction";
+import { createCart, fetchCarts } from "./../features/products/cartAction";
 import { fetchProducts } from "../features/products/productAction";
+import { getVariantsByProductId } from "../services/variantService";
+import { addCart } from "../services/cartServices";
+import { AuthContext } from "../contexts/AuthContext";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import CSS cho toast
 
 const ProductDetailPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const carts = useSelector((state) => state.carts.carts || []);
+  const { user } = useContext(AuthContext);
   const [data, setData] = useState({});
+  const [variants, setVariants] = useState([]);
   const [suggestedProducts, setSuggestedProducts] = useState([]);
-  const { carts } = useSelector((state) => state.carts);
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const [selectedColor, setSelectedColor] = useState("");
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedSku, setSelectedSku] = useState("");
+  const [selectedVariant, setSelectedVariant] = useState(null);
+  const [colors, setColors] = useState([]);
+  const [sizes, setSizes] = useState([]);
+  const [enableSize, setEnableSize] = useState(false);
+  const [enableColor, setEnableColor] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [attributes, setAttributes] = useState([]);
+  const categorySlug =
+    data.categoryId?.slug ||
+    data.categoryId?.title.replace(/\s+/g, "-").toLowerCase() ||
+    "default-slug";
 
   useEffect(() => {
-    if (user?.id) {
-      dispatch(fetchCarts(user.id));
+    if (user?._id) {
+      dispatch(fetchCarts(user._id));
     }
-  }, [user?.id, dispatch]);
+  }, [user?._id, dispatch]);
 
-  const addCart = async (productId, product) => {
-    const key = `${product.title}_${product.id}_${user.name}_${user.id}`;
+  const addCartHandler = async () => {
+    if (!selectedVariant) {
+      toast.error("Sản phẩm không có sẵn trong kho!");
+      return;
+    }
 
-    // Kiểm tra nếu số lượng trong giỏ hàng đã bằng hoặc lớn hơn số lượng tồn kho
-    const cartQuantity = carts.find((item) => item.id === key)?.quantity || 0;
-    if (cartQuantity >= product.stock) {
-      alert(
-        "Số lượng sản phẩm trong giỏ hàng không được vượt quá số lượng tồn kho!"
+    if (quantity < 1 || quantity > selectedVariant.stock) {
+      toast.error(
+        `Số lượng của loại sản phẩm này còn ${selectedVariant.stock} vui lòng chọn loại khác.`
       );
       return;
     }
 
-    const cartInfor = {
-      productId,
-      cartPrice: product.price,
-      quantity: 1,
-      userId: user.id,
-      id: key,
+    // Tạo đối tượng sản phẩm để thêm vào giỏ hàng
+    const cartItem = {
+      productId: id || selectedVariant.productId,
+      variantId: selectedVariant._id,
+      quantity: quantity,
+      price: selectedVariant.price,
+      stock: selectedVariant.stock,
+      size: selectedSize,
+      color: selectedColor,
     };
 
-    const existItem = carts.find((item) => item.id === key);
-    let updateItem;
-    if (existItem) {
-      updateItem = {
-        ...existItem,
-        quantity: existItem.quantity + 1,
-      };
-      console.log(updateItem.id);
-      dispatch(editCarts({ id: updateItem.id, cart: updateItem }));
-      alert("Sản phẩm đã được cập nhật số lượng trong giỏ hàng!");
+    // Nếu người dùng chưa đăng nhập
+    if (!user?._id) {
+      const guestCart = JSON.parse(localStorage.getItem("guestCart")) || [];
+
+      // Kiểm tra xem sản phẩm đã có trong giỏ hàng tạm thời chưa
+      const existingItemIndex = guestCart.findIndex(
+        (item) => item.variantId === cartItem.variantId
+      );
+
+      if (existingItemIndex !== -1) {
+        // Nếu đã có, cập nhật số lượng
+        const newQuantity =
+          guestCart[existingItemIndex].quantity + cartItem.quantity;
+        if (newQuantity > selectedVariant.stock) {
+          toast.error("Số lượng trong giỏ hàng không được vượt quá tồn kho!");
+          return;
+        }
+        guestCart[existingItemIndex].quantity = newQuantity; // Cập nhật số lượng
+      } else {
+        // Nếu chưa có, thêm mới vào giỏ hàng tạm
+        guestCart.push(cartItem);
+      }
+
+      // Lưu giỏ hàng tạm thời vào localStorage
+      localStorage.setItem("guestCart", JSON.stringify(guestCart));
+      window.dispatchEvent(new Event("storage"));
+      toast.success("Sản phẩm đã được thêm vào giỏ hàng tạm thời!");
       return;
-    } else {
-      dispatch(createCart(cartInfor));
-      alert("Sản phẩm đã được thêm vào giỏ hàng");
+    }
+
+    // Nếu người dùng đã đăng nhập, kiểm tra số lượng trong giỏ hàng
+    const cartQuantity =
+      carts.find((item) => item.variantId === selectedVariant?._id)?.quantity ||
+      0;
+
+    if (cartQuantity + quantity > selectedVariant.stock) {
+      toast.error("Số lượng trong giỏ hàng không được vượt quá tồn kho!");
+      return;
+    }
+
+    // Thêm thông tin người dùng vào cartItem
+    cartItem.userId = user._id;
+
+    // Kiểm tra dữ liệu hợp lệ
+    if (!cartItem.userId || !cartItem.productId || !cartItem.variantId) {
+      console.error("Dữ liệu không hợp lệ khi gửi API!", cartItem);
+      toast.error("Lỗi: Dữ liệu không hợp lệ!");
+      return;
+    }
+
+    try {
+      // Gọi API thêm vào giỏ hàng
+      const updatedCart = await addCart(cartItem);
+      if (updatedCart) {
+        // Cập nhật Redux store
+        dispatch(createCart(updatedCart));
+        dispatch(fetchCarts(user._id));
+        toast.success("Sản phẩm đã được thêm vào giỏ hàng!");
+      }
+    } catch (error) {
+      console.error("Lỗi khi thêm vào giỏ hàng:", error);
+      toast.error("Lỗi khi thêm sản phẩm vào giỏ hàng. Vui lòng thử lại!");
     }
   };
 
@@ -82,60 +150,204 @@ const ProductDetailPage = () => {
   }, [dispatch, id]);
 
   useEffect(() => {
+    if (!id) return;
+
+    (async () => {
+      try {
+        const productData = await getById(id);
+        if (!productData || !productData._id) {
+          console.error(" Lỗi: Không tìm thấy sản phẩm!");
+          return;
+        }
+        setData(productData);
+
+        // Lấy categoryId từ productData
+        const categoryId =
+          typeof productData.categoryId === "object"
+            ? productData.categoryId._id
+            : productData.categoryId;
+
+        // Gọi API lấy sản phẩm cùng danh mục
+        const suggested = await getByCategory(categoryId);
+
+        // Lọc sản phẩm để loại bỏ chính sản phẩm hiện tại
+        const filteredSuggested = suggested.filter((product) => {
+          const productCategoryId =
+            typeof product.categoryId === "object"
+              ? product.categoryId._id
+              : product.categoryId;
+
+          return (
+            String(productCategoryId) === String(categoryId) &&
+            String(product._id) !== String(productData._id)
+          );
+        });
+
+        // console.log(" Sản phẩm sau khi lọc:", filteredSuggested);
+        setSuggestedProducts(filteredSuggested);
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu sản phẩm:", error);
+      }
+    })();
+  }, [id]);
+
+  //  Lấy thông tin sản phẩm
+  useEffect(() => {
     if (id) {
       (async () => {
-        const data = await getById(id);
-        setData(data);
+        try {
+          const productData = await getById(id);
+          if (!productData || !productData._id) {
+            console.error("Lỗi: Không tìm thấy sản phẩm!");
+            return;
+          }
+          setData(productData);
 
-        // Lấy các sản phẩm gợi ý sau khi nhận được sản phẩm hiện tại
-        const suggested = await getByCategory(data.category);
-
-        // Lọc theo danh mục và loại bỏ sản phẩm hiện tại khỏi danh sách gợi ý
-        const filteredSuggested = suggested.filter(
-          (product) => product.id !== data.id
-        );
-
-        // Nếu danh mục là "kitchen-accessories", áp dụng giảm giá 10%
-        const discountedProducts = filteredSuggested.map((product) =>
-          data.category === "kitchen-accessories"
-            ? { ...product, price: (product.price * 0.9).toFixed(2) }
-            : product
-        );
-        setSuggestedProducts(discountedProducts);
+          // Lấy attributes từ variants
+          if (productData.variants && productData.variants.length > 0) {
+            const allAttributes = productData.variants.flatMap(
+              (variant) => variant.attributes
+            );
+            setAttributes(allAttributes); // Lưu trữ tất cả attributes từ variants
+          } else {
+            setAttributes([]); // Nếu không có variants, đặt attributes là mảng rỗng
+          }
+        } catch (error) {
+          console.error("Lỗi khi lấy dữ liệu sản phẩm:", error);
+        }
       })();
     }
-  }, [id, data.category]); // Ensure that useEffect runs when data.category changes
+  }, [id]);
 
-  const renderStars = (rating) => {
-    const stars = [];
-    const poinStars = [1, 2, 3, 4, 5];
+  const formatCurrency = (amount) =>
+    new Intl.NumberFormat("vi-VN").format(amount).replace(/\./g, ",");
 
-    for (const starNow of poinStars) {
-      if (rating >= starNow) {
-        stars.push(<i key={starNow} className="fa-solid fa-star"></i>);
-      } else if (rating >= starNow - 0.5) {
-        stars.push(
-          <i key={starNow} className="fa-solid fa-star-half-stroke"></i>
-        );
-      } else {
-        stars.push(<i key={starNow} className="fa-regular fa-star"></i>);
-      }
+  useEffect(() => {
+    if (id) {
+      setVariants([]);
+      (async () => {
+        try {
+          const variantData = await getVariantsByProductId(id);
+          const filteredVariants = variantData.filter(
+            (variant) =>
+              variant.productId !== null &&
+              (variant.productId?._id === id || variant.productId === id)
+          );
+          setVariants(filteredVariants);
+
+          // Kiểm tra sản phẩm có Size hoặc Color không
+          const hasSize = filteredVariants.some((variant) =>
+            variant.attributes.some((attr) => attr.attributeId.name === "Size")
+          );
+          const hasColor = filteredVariants.some((variant) =>
+            variant.attributes.some((attr) => attr.attributeId.name === "Color")
+          );
+
+          setEnableSize(hasSize);
+          setEnableColor(hasColor);
+
+          // Nếu không có kích thước, tự động chọn màu sắc đầu tiên
+          if (!hasSize && hasColor) {
+            const firstColor = filteredVariants[0].attributes.find(
+              (attr) => attr.attributeId.name === "Color"
+            ).value;
+            setSelectedColor(firstColor);
+            updateVariant(firstColor, null); // Gọi hàm để cập nhật SKU
+          }
+        } catch (error) {
+          console.error("Lỗi khi lấy variants:", error);
+        }
+      })();
+    }
+  }, [id]);
+
+  useEffect(() => {
+    const uniqueColors = [
+      ...new Set(
+        variants
+          .map(
+            (variant) =>
+              variant.attributes.find(
+                (attr) => attr.attributeId.name === "Color"
+              )?.value
+          )
+          .filter(Boolean)
+      ),
+    ];
+    setColors(uniqueColors);
+    if (uniqueColors.length > 0) {
+      setSelectedColor(uniqueColors[0]); // Chọn Color đầu tiên nếu có
+      updateVariant(selectedColor, uniqueColors[0]);
+    }
+  }, [variants]);
+
+  useEffect(() => {
+    const uniqueSizes = [
+      ...new Set(
+        variants
+          .map(
+            (variant) =>
+              variant.attributes.find(
+                (attr) => attr.attributeId.name === "Size"
+              )?.value
+          )
+          .filter(Boolean)
+      ),
+    ];
+    setSizes(uniqueSizes);
+    if (uniqueSizes.length > 0) {
+      setSelectedSize(uniqueSizes[0]); // Chọn Size đầu tiên
+      updateVariant(selectedColor, uniqueSizes[0]); // Cập nhật SKU ngay
+    }
+  }, [variants]);
+
+  useEffect(() => {
+    if (selectedSize) {
+      updateVariant(selectedColor, selectedSize);
+    }
+  }, [selectedColor, selectedSize]);
+
+  const updateVariant = (color, size) => {
+    if (!color) {
+      setSelectedVariant(null);
+      setSelectedSku("Không có SKU phù hợp");
+      return;
     }
 
-    return stars;
+    const foundVariant = variants.find((variant) => {
+      const hasColor = enableColor
+        ? variant.attributes.some(
+            (attr) => attr.attributeId.name === "Color" && attr.value === color
+          )
+        : true;
+
+      // Nếu không có kích thước, chỉ cần kiểm tra màu sắc
+      const hasSize = enableSize
+        ? variant.attributes.some(
+            (attr) => attr.attributeId.name === "Size" && attr.value === size
+          )
+        : true; // Nếu không có kích thước, trả về true
+
+      return hasColor && hasSize;
+    });
+
+    if (foundVariant) {
+      setSelectedSku(foundVariant.sku);
+      setSelectedVariant(foundVariant);
+    } else {
+      setSelectedSku("Không có SKU phù hợp");
+      setSelectedVariant(null);
+    }
   };
 
-  const formatToVietnamTime = (utcDateString) => {
-    const date = new Date(utcDateString);
-    return date.toLocaleString("vi-VN", {
-      timeZone: "Asia/Ho_Chi_Minh",
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
+  const handleColorChange = (color) => {
+    setSelectedColor(color);
+    updateVariant(color, selectedSize); // Gọi hàm với màu sắc đã chọn
+  };
+
+  const handleSizeChange = (size) => {
+    setSelectedSize(size);
+    updateVariant(selectedColor, size); // Gọi hàm với kích thước đã chọn
   };
 
   return (
@@ -146,7 +358,7 @@ const ProductDetailPage = () => {
             <div className="container">
               <ul>
                 <li>
-                  <a href="./index.html">Trang chủ |</a>
+                  <a href="/">Trang chủ |</a>
                 </li>
                 <li>Sản phẩm của Tokyolife</li>
               </ul>
@@ -155,29 +367,30 @@ const ProductDetailPage = () => {
         </section>
         <div className="row">
           <div className="col-lg-6 col-sm-12 col-12">
-            <img className="detail-img" src={data.thumbnail} alt={data.title} />
+            <img className="detail-img" src={data.imageUrl} alt={data.title} />
           </div>
           <div className="col-lg-6 col-sm-12 col-12">
             <div className="content-product">
               <p className="header">
-                {data.category === "kitchen-accessories"
-                  ? "Giảm Giá "
-                  : "Bán Chạy"}
+                {data.categoryId === "Sale" ? "Giảm Giá " : "Bán Chạy"}
               </p>
               <h1>Sản Phẩm {data.title}</h1>
-              <p className="quantity-text">
-                <span style={{ fontWeight: 600 }}>Hãng:</span> {data.brand}
-              </p>
-              <div className="SKU">
-                <span style={{ fontWeight: 600, color: "black" }}>
-                  Mã sản phẩm:
-                </span>
-                {data.sku}
+              <div className="quantity-text">
+                <p
+                  style={{
+                    fontSize: "14px",
+                    color: "rgb(85, 85, 85)",
+                    fontWeight: 400,
+                  }}
+                >
+                  SKU: {selectedSku}
+                </p>
               </div>
-              <p>
+
+              <div>
                 <span style={{ fontWeight: 600 }}>Danh Mục Sản Phẩm:</span>
-                {data.category}
-              </p>
+                {data.categoryId ? data.categoryId.title : "Chưa có danh mục"}
+              </div>
               <div className="description">
                 <p>
                   <span style={{ fontWeight: 600 }}>Chi tiết sản phẩm:</span>
@@ -185,26 +398,50 @@ const ProductDetailPage = () => {
                 </p>
               </div>
               <div className="content-price">
-                <div>
-                  <div className="price">
-                    {data.category === "kitchen-accessories" ? (
+                <div className="price">
+                  {selectedVariant ? (
+                    // Nếu có biến thể, hiển thị giá của biến thể
+                    data.categoryId?.title === "Sale" ? (
                       <>
+                        <div style={{ display: "flex" }} className="price">
+                          {formatCurrency(selectedVariant.price * 0.5)}đ
+                        </div>
                         <span
                           style={{
                             textDecoration: "line-through",
                             color: "gray",
-                            marginRight: "10px",
                           }}
                         >
-                          {parseFloat(data.price / 0.9).toFixed(2)}$
+                          {formatCurrency(selectedVariant.price)}đ
                         </span>
-                        <span className="price">{data.price}$</span>
                       </>
                     ) : (
-                      <div>{data.price}$</div>
-                    )}
-                  </div>
+                      <div className="price">
+                        {formatCurrency(selectedVariant.price)}đ
+                      </div>
+                    )
+                  ) : // Nếu không có biến thể, hiển thị basePrice
+                  data.categoryId?.title === "Sale" ? (
+                    <>
+                      <div style={{ display: "flex" }} className="price">
+                        {formatCurrency(data.basePrice * 0.5)}đ
+                      </div>
+                      <span
+                        style={{
+                          textDecoration: "line-through",
+                          color: "gray",
+                        }}
+                      >
+                        {formatCurrency(data.basePrice)}đ
+                      </span>
+                    </>
+                  ) : (
+                    <div className="price">
+                      {formatCurrency(data.basePrice)}đ
+                    </div>
+                  )}
                 </div>
+
                 <div className="stock">
                   <span>Còn hàng</span>
                   <img src={tick} alt="tick" />
@@ -267,14 +504,138 @@ const ProductDetailPage = () => {
                 <p>Chat ngay để nhận tư vấn sản phẩm</p>
                 <i className="fa-solid fa-arrow-right-long"></i>
               </div>
+              <div>
+                {enableColor && colors.length > 0 && (
+                  <div>
+                    <strong>Chọn màu sắc:</strong>
+                    {colors.map((color) => (
+                      <button
+                        key={color}
+                        defaultValue={selectedColor}
+                        onClick={() => handleColorChange(color)}
+                        style={{
+                          backgroundColor:
+                            selectedColor === color ? "lightblue" : "white",
+                          margin: "5px",
+                          width: "60px",
+                          borderRadius: "60px",
+                          padding: "4px 0px",
+                        }}
+                      >
+                        {color}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                {enableSize && sizes.length > 0 && (
+                  <div>
+                    <strong>Chọn kích thước:</strong>
+                    {sizes.map((size) => (
+                      <button
+                        key={size}
+                        onClick={() => handleSizeChange(size)}
+                        style={{
+                          backgroundColor:
+                            selectedSize === size ? "lightblue" : "white",
+                          margin: "5px",
+                          width:
+                            data.categoryId?.title === "Kính Râm" ||
+                            (data.categoryId?.title === "NHÀ CỬA VÀ ĐỜI SỐNG" &&
+                              data.title !==
+                                "Bộ bàn chải đánh răng kèm 5 đầu làm sạch sâu")
+                              ? "112px"
+                              : "60px",
+                          borderRadius: "60px",
+                          padding: "4px 0px",
+                        }}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div>
+                {Array.isArray(attributes) && attributes.length > 0 ? (
+                  attributes
+                    .filter(
+                      (attr) =>
+                        attr.attributeId.name.toLowerCase() !== "size" &&
+                        attr.attributeId.name.toLowerCase() !== "color"
+                    )
+                    .map((attr) => (
+                      <div key={attr._id}>
+                        <strong>{attr.attributeId.name}:</strong>
+                        <span>{attr.value}</span>
+                      </div>
+                    ))
+                ) : (
+                  <p>Không có thuộc tính nào để hiển thị.</p>
+                )}
+              </div>
+
               <div className="stock">
                 <div>
                   <p>
                     <span style={{ fontWeight: "600px" }}>Còn:</span>
-                    {data.stock} sản phẩm
+                    {selectedVariant ? selectedVariant.stock : data.totalStock}
+                    sản phẩm
                   </p>
                 </div>
               </div>
+              <div>
+                <strong>Số lượng:</strong>
+                <div className="quantity-control">
+                  <button
+                    className="left"
+                    onClick={() =>
+                      setQuantity((prev) => (prev > 1 ? prev - 1 : 1))
+                    }
+                  >
+                    -
+                  </button>
+
+                  <input
+                    type="text"
+                    value={quantity}
+                    onChange={(e) => {
+                      let value =
+                        parseInt(e.target.value.replace(/\D/g, ""), 10) || 1;
+
+                      //  Kiểm tra nếu số lượng vượt quá tồn kho
+                      if (value > selectedVariant?.stock) {
+                        alert(
+                          `Số lượng không được vượt quá tồn kho (${selectedVariant.stock})!`
+                        );
+                        value = selectedVariant.stock;
+                      }
+
+                      setQuantity(value);
+                    }}
+                    style={{
+                      width: "20px",
+                      textAlign: "center",
+                      border: "none",
+                      outline: "none",
+                    }}
+                  />
+
+                  <button
+                    className="right"
+                    onClick={() =>
+                      setQuantity((prev) =>
+                        prev < selectedVariant?.stock ? prev + 1 : prev
+                      )
+                    }
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
               <div className="buy">
                 <button className="buy-cart">
                   <i className="fa-solid fa-cart-shopping"></i>
@@ -282,7 +643,7 @@ const ProductDetailPage = () => {
                     <a
                       className="add-product"
                       href="#!"
-                      onClick={() => addCart(id, data)}
+                      onClick={addCartHandler}
                     >
                       Thêm giỏ hàng
                     </a>
@@ -320,122 +681,81 @@ const ProductDetailPage = () => {
           </div>
         </div>
       </div>
-      <section className="review">
+      {/* <section className="suggested-products">
         <div className="container">
-          <div className="review-header">
-            <h6>ĐÁNH GIÁ TỪ NGƯỜI MUA</h6>
-          </div>
+          <h2>Sản phẩm cùng danh mục:</h2>
           <div className="row">
-            <div className="col-lg-6  col-12">
-              <div className="review-left">
-                <div className="review-left-body">
-                  <div className="review-text-left">
-                    <h3>
-                      <span style={{ fontSize: "38px" }}>{data.rating}</span>
-                      <span style={{ fontSize: "28px" }}>/5</span>
-                    </h3>
-                    <div className="star">{renderStars(data.rating)}</div>
-                  </div>
-                  <div className="review-left-sub">
-                    <div className="review-star-sub">
-                      <p>
-                        5<i className="fa-solid fa-star"></i>
-                        <span className="review-first"></span>
-                      </p>
-                    </div>
-                    <div className="review-star-sub">
-                      <p>
-                        4<i className="fa-solid fa-star"></i>
-                        <span></span>
-                      </p>
-                    </div>
-                    <div className="review-star-sub">
-                      <p>
-                        3<i className="fa-solid fa-star"></i>
-                        <span></span>
-                      </p>
-                    </div>
-                    <div className="review-star-sub">
-                      <p>
-                        2<i className="fa-solid fa-star"></i>
-                        <span></span>
-                      </p>
-                    </div>
-                    <div className="review-star-sub">
-                      <p>
-                        1<i className="fa-solid fa-star"></i>
-                        <span></span>
-                      </p>
+            {suggestedProducts.length > 0 ? (
+              suggestedProducts.map((product) => (
+                <div key={product._id} className="col-lg-3 col-sm-6 col-12">
+                  <div className="product-card">
+                    <Link to={`/products/${product._id}`}>
+                      <img src={product.imageUrl} alt={product.title} />
+                    </Link>
+                    <div className="product-infor">
+                      <h2>{product.title}</h2>
+                      <div>Giá: {product.basePrice}đ</div>
+                      <p>{product.categoryId?.title || "Không xác định"}</p>
+                      <button>
+                        <Link to={`/products/${product._id}`}>Mua ngay</Link>
+                      </button>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div className="col-lg-6 col-12">
-              <div className="review-right">
-                <div className="review-right-body">
-                  <p>Hình ảnh từ người mua</p>
-                  <img
-                    className="img-right"
-                    src={data.thumbnail}
-                    alt={data.title}
-                    style={{ width: "100px", height: "100px" }}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="line-sub"></div>
-
-            <div className="col-12">
-              <div className="reviews-list">
-                {data.reviews?.map((review, index) => (
-                  <div key={index} className="review-item">
-                    <p className="reviewer-name">{review.reviewerName}</p>
-                    <div
-                      className="review-rating"
-                      style={{ color: "rgb(250, 175, 0)" }}
-                    >
-                      {renderStars(review.rating)}
-                    </div>
-                    <p className="review-comment">
-                      Đánh giá về sản phẩm: {review.comment}
-                    </p>
-                    <p className="review-date">
-                      Đã đánh giá vào lúc: {formatToVietnamTime(review.date)}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
+              ))
+            ) : (
+              <p>Không có sản phẩm cùng danh mục.</p>
+            )}
           </div>
         </div>
-      </section>
+      </section> */}
       <section className="suggested-products">
         <div className="container">
-          <h2>Một số sản phẩm cùng loại bạn có thể mua :</h2>
+          <h2>Sản phẩm cùng danh mục:</h2>
           <div className="row">
-            {suggestedProducts.map((product) => (
-              <div key={product.id} className="col-lg-3 col-sm-6 col-12">
-                <div className="product-card">
-                  <Link to={`/products/${product.id}`}>
-                    <img src={product.thumbnail} alt={product.title} />
-                  </Link>
-                  <div className="product-infor">
-                    <h2>
-                      <a>{product.title}</a>
-                    </h2>
-                    <div>Giá: {product.price}$</div>
-                    <p>Danh mục: {product.category}</p>
-                    <button>
-                      <Link to={`/products/${product.id}`}>Mua ngay</Link>
-                    </button>
+            {suggestedProducts.length > 0 ? (
+              suggestedProducts.slice(0, 4).map(
+                (
+                  product // Chỉ lấy 4 sản phẩm đầu tiên
+                ) => (
+                  <div key={product._id} className="col-lg-3 col-sm-6 col-12">
+                    <div className="product-card">
+                      <Link to={`/products/${product._id}`}>
+                        <img src={product.imageUrl} alt={product.title} />
+                      </Link>
+                      <div className="product-infor">
+                        <h2>
+                          <Link to={`/products/${product._id}`}>
+                            {product.title}
+                          </Link>
+                        </h2>
+                        <div>Giá: {formatCurrency(product.basePrice)}đ</div>
+                        <p>{product.categoryId?.title || "Không xác định"}</p>
+                        <button>
+                          <Link to={`/products/${product._id}`}>Mua ngay</Link>
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
+                )
+              )
+            ) : (
+              <p>Không có sản phẩm cùng danh mục.</p>
+            )}
           </div>
+          {suggestedProducts.length > 4 && (
+            <div style={{ textAlign: "center", marginTop: "20px" }}>
+              <Link
+                to={`/category/${categorySlug}`}
+                className="categoryList-button"
+              >
+                Xem thêm
+              </Link>
+            </div>
+          )}
         </div>
       </section>
+      <ToastContainer style={{ marginTop: "20px" }} />
     </div>
   );
 };

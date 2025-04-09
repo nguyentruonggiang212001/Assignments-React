@@ -29,8 +29,16 @@ export const editProduct = createAsyncThunk(
 
 export const removeProduct = createAsyncThunk(
   "products/removeProduct",
-  async (id) => {
-    await deleteProduct(id);
-    return id;
+  async (id, { rejectWithValue }) => {
+    try {
+      const result = await deleteProduct(id);
+      if (result) {
+        return id; // Trả về `id` nếu xóa thành công
+      } else {
+        return rejectWithValue("Xóa sản phẩm thất bại");
+      }
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Lỗi không xác định");
+    }
   }
 );

@@ -2,9 +2,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "./../../node_modules/@hookform/resolvers/zod/src/zod";
 import { NavLink, useNavigate } from "react-router-dom";
 import { loginSchema } from "../schemas/auth";
-import { authRequest } from "../services/auth";
 import { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
+import { authRequestLogin } from "../services/auth";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const LoginForm = () => {
   const Nav = useNavigate();
@@ -15,22 +17,30 @@ const LoginForm = () => {
     reset,
   } = useForm({ resolver: zodResolver(loginSchema) });
 
-  const { setStateUser, stateUser } = useContext(AuthContext);
+  const { setUser, user } = useContext(AuthContext);
 
   const handleLogin = async (dataBody) => {
-    const data = await authRequest("/login", dataBody);
-    if (data.accessToken && confirm("Đăng nhập thành công ")) {
-      Nav("/");
+    try {
+      const data = await authRequestLogin("/auth/login", dataBody);
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      // Xóa giỏ hàng tạm thời khi đăng nhập thành công
+      localStorage.removeItem("guestCart");
+
+      // Lưu thông tin vào localStorage
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("email", data?.user?.email);
       localStorage.setItem("role", data?.user?.role);
       localStorage.setItem("user", JSON.stringify(data?.user));
-      setStateUser(!stateUser);
+      setUser(data.user);
 
-      if (data.user.role === "admin") {
-        Nav("/admin/products");
-      } else Nav("/");
-    } else {
+      Nav("/");
+    } catch (error) {
+      console.error("Lỗi đăng nhập:", error.message);
+      toast.error(error.message, { position: "top-right" });
       reset();
     }
   };
@@ -51,25 +61,37 @@ const LoginForm = () => {
           <p style={{ color: "red" }}>{errors.email?.message}</p>
         )}
 
-        <label htmlFor="Password">Password</label>
+        <label htmlFor="Password">Mật Khẩu</label>
         <input
           type="password"
           name="password"
           id="password"
-          placeholder="Password"
+          placeholder="Mật Khẩu"
           {...register("password", { required: true })}
         />
         {errors.password && (
           <p style={{ color: "red" }}>{errors.password?.message}</p>
         )}
-        <NavLink to="/user/register">
-          <p
-            type="submit"
-            style={{ color: "blue", textAlign: "left", marginBottom: "10px" }}
-          >
-            Bạn có tài khoản chưa ?
-          </p>
-        </NavLink>
+
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <NavLink to="/register">
+            <p
+              type="submit"
+              style={{ color: "blue", textAlign: "left", marginBottom: "10px" }}
+            >
+              Bạn có tài khoản chưa ?
+            </p>
+          </NavLink>
+
+          <NavLink to="/forgot-password">
+            <p
+              style={{ color: "blue", textAlign: "left", marginBottom: "10px" }}
+            >
+              Quên mật khẩu?
+            </p>
+          </NavLink>
+        </div>
+
         <div>
           <button type="submit" className="btn-user">
             Login

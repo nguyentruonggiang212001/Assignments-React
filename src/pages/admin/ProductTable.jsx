@@ -1,14 +1,19 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchProducts,
   removeProduct,
 } from "../../features/products/productAction";
 import { Link } from "react-router-dom";
+import AdminSidebar from "./AdminSidebar";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 
-const ProductTable = () => {
+const AdminDashboard = () => {
   const { products, loading, error } = useSelector((state) => state.products);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [page, setPage] = useState(0);
+  const rowsPerPage = 10;
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -20,89 +25,170 @@ const ProductTable = () => {
   }, [dispatch]);
 
   const handleDelete = (id) => {
-    if (confirm("Are you sure delete")) {
+    if (window.confirm("Bạn có chắc muốn xóa sản phẩm không?")) {
       dispatch(removeProduct(id));
     }
   };
 
   if (!isAdmin) {
     return (
-      <h2
+      <h3
         style={{
-          textAlign: "center",
-          marginTop: "205px",
           color: "red",
+          textAlign: "center",
+          marginTop: "20px",
           fontSize: "20px",
         }}
       >
         Bạn không có quyền truy cập trang này!
-      </h2>
+      </h3>
     );
   }
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  // Lấy danh sách sản phẩm cần hiển thị
+  const displayedProducts = products.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
+
   return (
-    <>
-      <h1
-        style={{
-          marginTop: "200px",
-          textAlign: "center",
-          fontSize: "25px",
-          fontWeight: "bold",
-        }}
-      >
-        Products List
-      </h1>
-      <Link to={`/admin/products/add`}>
-        <button className="btn btn-primary">Add Product</button>
-      </Link>
-      <table className="product-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Price</th>
-            <th>Description</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.length ? (
-            products.map((item) => (
-              <tr key={item.id}>
-                <td>{item.id}</td>
-                <td>{item.title}</td>
-                <td>{item.price}</td>
-                <td>{item.description}</td>
-                <td style={{ display: "flex" }}>
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => handleDelete(item.id)}
-                    style={{ marginRight: "5px" }}
-                  >
-                    Delete
-                  </button>
-                  <Link
-                    className="btn btn-warning"
-                    to={`/admin/products/update/${item.id}`}
-                  >
-                    Update
-                  </Link>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={5} style={{ textAlign: "center" }}>
-                Product Empty
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </>
+    <div style={{ display: "flex" }}>
+      <AdminSidebar />
+
+      <div style={{ flex: 1, padding: "20px" }}>
+        <h2
+          style={{
+            textAlign: "center",
+            marginBottom: "20px",
+            fontSize: "30px",
+            fontWeight: "bold",
+          }}
+        >
+          Danh Sách Sản Phẩm Tokyo Life
+        </h2>
+
+        {loading ? (
+          <p>Loading...</p>
+        ) : error ? (
+          <p style={{ color: "red" }}>{error}</p>
+        ) : (
+          <>
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+              }}
+            >
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Tên Sản Phẩm</th>
+                  <th>Giá</th>
+                  <th>Mô Tả</th>
+                  <th style={{ minWidth: "120px", textAlign: "center" }}>
+                    Hành Động
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {displayedProducts.map((item) => (
+                  <tr key={item._id}>
+                    <td>{item._id}</td>
+                    <td>{item.title}</td>
+                    <td>{item.basePrice.toLocaleString("vi-VN")}đ</td>
+                    <td>{item.description}</td>
+                    <td>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          gap: "10px",
+                        }}
+                      >
+                        <button
+                          onClick={() => handleDelete(item._id)}
+                          style={{
+                            color: "red",
+                            background: "transparent",
+                            border: "none",
+                            cursor: "pointer",
+                          }}
+                        >
+                          <DeleteIcon />
+                        </button>
+                        <Link to={`/admin/products/update/${item._id}`}>
+                          <button
+                            style={{
+                              color: "blue",
+                              background: "transparent",
+                              border: "none",
+                              cursor: "pointer",
+                            }}
+                          >
+                            <EditIcon />
+                          </button>
+                        </Link>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {products.length > rowsPerPage && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "20px",
+                }}
+              >
+                <button
+                  style={{
+                    backgroundColor: "#007bff",
+                    color: "white",
+                    padding: "8px 12px",
+                    borderRadius: "5px",
+                    border: "none",
+                    marginRight: "10px",
+                    cursor: page === 0 ? "not-allowed" : "pointer",
+                    opacity: page === 0 ? 0.5 : 1,
+                  }}
+                  onClick={() => setPage(page - 1)}
+                  disabled={page === 0}
+                >
+                  Trước
+                </button>
+                <span style={{ margin: "8px 10px", fontWeight: "bold" }}>
+                  Trang {page + 1}/{Math.ceil(products.length / rowsPerPage)}
+                </span>
+                <button
+                  onClick={() => setPage(page + 1)}
+                  disabled={(page + 1) * rowsPerPage >= products.length}
+                  style={{
+                    backgroundColor: "#28a745",
+                    color: "white",
+                    padding: "8px 12px",
+                    borderRadius: "5px",
+                    border: "none",
+                    marginLeft: "10px",
+                    cursor:
+                      (page + 1) * rowsPerPage >= products.length
+                        ? "not-allowed"
+                        : "pointer",
+                    opacity:
+                      (page + 1) * rowsPerPage >= products.length ? 0.5 : 1,
+                  }}
+                >
+                  Sau
+                </button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </div>
   );
 };
 
-export default ProductTable;
+export default AdminDashboard;

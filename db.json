@@ -11880,17 +11880,6 @@
       "category": "skin-care",
       "stock": 4,
       "id": 201
-    },
-    {
-      "title": "12333333qewe",
-      "price": 33333333333,
-      "description": "qweqwewq",
-      "thumbnail": "https://res.cloudinary.com/dlfijfzkt/image/upload/v1736068828/uctcto9p58nvbffpdpue.jpg",
-      "brand": "Essence",
-      "sku": "1111111111111111",
-      "category": "skin-care",
-      "stock": 4,
-      "id": 202
     }
   ],
   "users": [
@@ -11951,5 +11940,12 @@
       "id": 7
     }
   ],
-  "carts": []
+  "carts": [
+    {
+      "productId": "2",
+      "cartPrice": 19.99,
+      "quantity": 1,
+      "id": "Eyeshadow Palette with Mirror_2_undefined_undefined"
+    }
+  ]
 }
